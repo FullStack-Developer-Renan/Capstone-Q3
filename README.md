@@ -248,7 +248,7 @@
             "empty": False,
             "orders_list": /api/orders/1
         },
-            {
+        {
             "id": 2,
             "number": 1,
             "seats": 6,
@@ -260,9 +260,56 @@
     ]
 ```
 
-endpoint(GET_TABLE) = '/api/tables/<table_id: int>/' -> GET
-endpoint(CREATE_TABLE) = '/api/tables/' -> POST
-endpoint(UPDATE_TABLE) = '/api/tables/<table_id: int>/' -> PATCH
+### ![POST](./assets/img/post.png) CREATE_TABLE
+```
+/api/tables/
+```
+#### Header
+```
+```
+#### Response
+```json
+    {
+        "id": 1,
+        "number": 1,
+        "seats": 6,
+        "empty": True,
+    }
+```
+### ![PATCH](./assets/img/patch.png) UPDATE_TABLE
+```
+/api/tables/<table_id: int>/
+```
+#### Header
+```
+```
+#### Body
+```json
+    {
+        "number": 2,
+        "seats": 4
+    }
+```
+#### Response
+```json
+    {
+        "id": 1,
+        "number": 2,
+        "seats": 4,
+        "user": {
+                    "id": 1,
+                    "name": "Joseph Climber",
+                    "cpf": "047222222222",
+                    "total_spent": 522.35
+                },
+        "total": 127.48,
+        "empty": False,
+        "orders_list": /api/orders/1
+    }
+```
+
+
+
 endpoint(DELETE_TABLE) = '/api/tables/<table_id: int>/' -> DELETE
 endpoint(LOGIN_TABLE) = '/api/tables/login' -> POST
 
