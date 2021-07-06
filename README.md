@@ -2,8 +2,12 @@
 
 ## **EMPLOYEES**
 ### ![GET](./assets/img/get.png) GET_EMPLOYEES
->/api/employees/
-
+```
+/api/employees/
+```
+#### Header
+```
+```
 #### Response
 
 ```json
@@ -26,9 +30,12 @@
 ```
 
 ### ![GET](./assets/img/get.png) GET_EMPLOYEE
->/api/employees/<employee_id: int>/
-
-
+```
+/api/employees/<employee_id: int>/
+```
+#### Header
+```
+```
 #### Response
 ```json
     {
@@ -41,8 +48,9 @@
 ```
 
 ### ![POST](./assets/img/post.png) CREATE_EMPLOYEE
->/api/employees/
-
+```
+/api/employees/
+```
 #### Body
 ```json
     {
@@ -66,8 +74,12 @@
 ```
 
 ### ![PATCH](./assets/img/patch.png) UPDATE_EMPLOYEE
->/api/employees/<employee_id: int>/
-
+```
+/api/employees/<employee_id: int>/
+```
+#### Header
+```
+```
 #### Body
 ```json
     {
@@ -91,8 +103,12 @@
 ## **USERS**
 
 ### ![GET](./assets/img/get.png) GET_USERS
->/api/users/
-
+```
+/api/users/
+```
+#### Header
+```
+```
 #### Response
 
 ```json
@@ -113,8 +129,12 @@
 ```
 
 ### ![GET](./assets/img/get.png) GET_USER
->/api/users/<user_cpf: str>/
-
+```
+/api/users/<user_cpf: str>/
+```
+#### Header
+```
+```
 #### Response
 
 ```json
@@ -127,8 +147,12 @@
 ```
 
 ### ![POST](./assets/img/post.png) CREATE_USER
->/api/users/
-
+```
+/api/users/
+```
+#### Header
+```
+```
 #### Body
 ```json
     {
@@ -148,8 +172,12 @@
 ```
 
 ### ![PATCH](./assets/img/patch.png) UPDATE_USER
->/api/users/<user_id: int>/
-
+```
+/api/users/<user_id: int>/
+```
+#### Header
+```
+```
 #### Body
 ```json
     {
@@ -169,10 +197,69 @@
     }
 ```
 
+## **TABLES**
 
+### ![GET](./assets/img/get.png) GET_TABLES
+```
+/api/tables?empty=<empty: bool>/
+```
+#### Header
+```
+```
+#### Response
+```json
+    {
+        "id": 1,
+        "number": 1,
+        "seats": 6,
+        "user": {
+                    "id": 1,
+                    "name": "Joseph Climber",
+                    "cpf": "047222222222",
+                    "total_spent": 522.35
+                },
+        "total": 127.48,
+        "empty": False,
+        "orders_list": /api/orders/1
+    }
+```
 
-tables -> GET POST PATCH
-endpoint(GET_TABLES) = '/api/tables?empty=<empty: bool>/' -> GET
+### ![GET](./assets/img/get.png) GET_TABLE
+```
+/api/tables/table_id=<table_id: int>/
+```
+#### Header
+```
+```
+#### Response
+```json
+    [
+        {
+            "id": 1,
+            "number": 1,
+            "seats": 6,
+            "user": {
+                        "id": 1,
+                        "name": "Joseph Climber",
+                        "cpf": "047222222222",
+                        "total_spent": 522.35
+                    },
+            "total": 127.48,
+            "empty": False,
+            "orders_list": /api/orders/1
+        },
+            {
+            "id": 2,
+            "number": 1,
+            "seats": 6,
+            "user": {},                    },
+            "total": 127.48,
+            "empty": True,
+            "orders_list": /api/orders/2
+        }
+    ]
+```
+
 endpoint(GET_TABLE) = '/api/tables/<table_id: int>/' -> GET
 endpoint(CREATE_TABLE) = '/api/tables/' -> POST
 endpoint(UPDATE_TABLE) = '/api/tables/<table_id: int>/' -> PATCH
