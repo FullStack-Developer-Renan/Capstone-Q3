@@ -1,8 +1,4 @@
-from app.models.users_model import UsersModel
 from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy.orm import backref, relation, relationship
-from sqlalchemy.sql.functions import user
-from sqlalchemy.sql.schema import ForeignKey
 from app.configs.database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from dataclasses import dataclass
