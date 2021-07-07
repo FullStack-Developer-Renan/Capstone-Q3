@@ -14,7 +14,6 @@ class OrdersModel(db.Model):
     ready: bool
     delivered: bool
     paid: bool
-    # products_list: list["ProductsModel"]
 
     __tablename__ = "orders"
 
@@ -32,5 +31,3 @@ class OrdersModel(db.Model):
     table = relationship("RestaurantTableModel", backref="restaurant_tables")
 
     products = relationship("ProductsModel", secondary="products", backref="orders")
-
-    # products_list = relationship("ProductsModel", backref=backref("order_list"), secondary="")
