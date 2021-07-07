@@ -7,5 +7,7 @@ def init_app(app: Flask) -> None:
     from app.models.users_model import UsersModel
     from app.models.restaurant_table_model import RestaurantTableModel
     from app.models.orders_model import OrdersModel
+    from app.models.products_model import ProductsModel
+    from app.models.products_orders_model import ProductsOrdersModel
     from app.models.employees_model import EmployeesModel # Apenas para flask migrate / remover quando criar a view
     
