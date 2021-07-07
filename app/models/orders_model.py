@@ -1,4 +1,5 @@
 from sqlalchemy.orm import backref, relationship
+from sqlalchemy.sql.schema import ForeignKey
 from app.configs.database import db
 from sqlalchemy import Integer, Column, Boolean, DateTime
 from dataclasses import dataclass
@@ -13,7 +14,7 @@ class OrdersModel(db.Model):
     ready: bool
     delivered: bool
     paid: bool
-    products_list: list["ProductsModel"]
+    # products_list: list["ProductsModel"]
 
     __tablename__ = "orders"
 
@@ -26,5 +27,9 @@ class OrdersModel(db.Model):
     ready = Column(Boolean, default=False)
     delivered = Column(Boolean, default=False)
     paid = Column(Boolean, default=False)
+
+    table_id = Column(Integer, ForeignKey("restaurant_tables.id"))
+    table = relationship("RestaurantTableModel", backref="restaurant_tables")
+
 
     # products_list = relationship("ProductsModel", backref=backref("order_list"), secondary="")

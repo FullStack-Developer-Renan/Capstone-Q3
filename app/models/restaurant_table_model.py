@@ -1,11 +1,22 @@
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
 from app.configs.database import db
 
 from sqlalchemy import Column, Integer, Boolean, VARCHAR
 from werkzeug.security import generate_password_hash
+from dataclasses import dataclass
 
+@dataclass
 class RestaurantTableModel(db.Model):
+
+    id: int
+    seats: int
+    number: int
+    total: int
+    password_hash: str
+    empty: bool
+    user_id: int
+
     __tablename__ = "restaurant_tables"
 
     id = Column(Integer, primary_key=True)
@@ -18,6 +29,8 @@ class RestaurantTableModel(db.Model):
 
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("UsersModel", backref="tables")
+
+    orders = relationship("OrdersModel", backref="order")
 
     @property
     def password(self):
