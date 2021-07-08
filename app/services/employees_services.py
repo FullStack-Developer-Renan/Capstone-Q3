@@ -1,5 +1,5 @@
 from app.models.employees_model import EmployeesModel
-from flask import jsonify
+from flask import jsonify, current_app
 from flask_restful import reqparse
 from http import HTTPStatus
 
@@ -54,5 +54,16 @@ def update_employee(id) -> EmployeesModel:
     add_commit(employee)
 
     return employee, HTTPStatus.OK
+
+def delete_employee(id) -> str:
+    session = current_app.db.session
+
+    employee = EmployeesModel.query.get(id)
+
+    session.delete(employee)
+    session.commit()
+
+    return "", HTTPStatus.NO_CONTENT
+
 
 

@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from http import HTTPStatus
 
-from app.services.employees_services import get_all, get_by_id, update_employee, create_employee
+from app.services.employees_services import get_all, get_by_id, update_employee, create_employee, delete_employee
 
 class EmployeesResource(Resource):
     def get():
@@ -16,3 +16,7 @@ class EmployeeIDResource(Resource):
 
     def patch(employee_id: int):
         return update_employee(employee_id)
+
+    def delete(employee_id: int):
+        return delete_employee(employee_id)
+
