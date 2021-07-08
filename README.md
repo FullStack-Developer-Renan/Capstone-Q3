@@ -1,8 +1,8 @@
 # API_RESTAURANT
 
 ## **EMPLOYEES**
-<div style="display: flex; align-itens: center; margin-bottom: 10px;"><img src='./assets/img/GET.svg'><h3>GET_EMPLOYEES</h3></div>
-<br>
+
+### ![GET](./assets/img/GET.svg) GET_EMPLOYEES
 
 
 ```
