@@ -1,9 +1,10 @@
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.sql.sqltypes import String
 from app.configs.database import db
-from sqlalchemy import Integer, Column, Boolean, DateTime
+from sqlalchemy import Integer, Column, Boolean, DateTime, ARRAY
+from app.models.products_model import ProductsModel
 from dataclasses import dataclass
-
 
 @dataclass
 class OrdersModel(db.Model):
@@ -26,8 +27,10 @@ class OrdersModel(db.Model):
     ready = Column(Boolean, default=False)
     delivered = Column(Boolean, default=False)
     paid = Column(Boolean, default=False)
+    ## Pegando products
+    products_list = Column(ARRAY(String),default=[])
 
     table_id = Column(Integer, ForeignKey("restaurant_tables.id"))
     table = relationship("RestaurantTableModel", backref="restaurant_tables")
 
-    products = relationship("ProductsModel", secondary="products", backref="orders")
+    # products = relationship("ProductsModel", secondary="products", backref="orders")
