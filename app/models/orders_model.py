@@ -28,9 +28,9 @@ class OrdersModel(db.Model):
     delivered = Column(Boolean, default=False)
     paid = Column(Boolean, default=False)
     ## Pegando products
-    products_list = Column(ARRAY(String),default=[])
+    # products_list = Column(ARRAY(String),default=[])
 
     table_id = Column(Integer, ForeignKey("restaurant_tables.id"))
     table = relationship("RestaurantTableModel", backref="restaurant_tables")
 
-    # products = relationship("ProductsModel", secondary="products", backref="orders")
+    products = relationship("ProductsModel", secondary="products", backref="orders")
