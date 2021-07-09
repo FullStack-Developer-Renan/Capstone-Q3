@@ -4,7 +4,7 @@ from flask_restful import reqparse
 from app.services.helpers import add_commit
 
 
-def get_all() -> list[UsersModel]:
+def get_all():
     users_list: list[UsersModel] = UsersModel.query.all()
     return jsonify(users_list)
 

@@ -26,5 +26,5 @@ class ProductsModel(db.Model):
     is_veggie = Column(Boolean, default=False)
 
     def serialize(self):
-        return {"id": self.id, "name": self.name, "calories": self.calories, "section": self.section, "is_veggie": self.is_veggie}
+        return {"id": self.id, "price": self.price, "name": self.name, "calories": self.calories, "section": self.section, "is_veggie": self.is_veggie}
     
