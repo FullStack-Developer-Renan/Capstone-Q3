@@ -23,3 +23,7 @@ class ProductsModel(db.Model):
     calories = Column(Float)
     section = Column(String(150))
     is_veggie = Column(Boolean, default=False)
+
+    def serialize(self):
+        return {"id": self.id, "name": self.name, "calories": self.calories, "section": self.section, "is_veggie": self.is_veggie}
+    

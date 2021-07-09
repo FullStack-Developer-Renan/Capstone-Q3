@@ -6,20 +6,35 @@ from http import HTTPStatus
 from ipdb import set_trace
 
 from app.services.helpers import add_commit
+# /api/products?section=<section:bool>?is_veggie=<is_veggie:bool>
 
+def get_all() -> dict:
 
-def get_all():
-    # /api/products?section=<section:bool>?is_veggie=<is_veggie:bool>
-    products_list = []
-    # section = request.args.get("section")
-    # is_veggie = request.args.get("is_veggie")
+    args = request.args
+    response = []
 
+    if "is_veggie" in args and "price" not in args:
+        is_veggie = args["is_veggie"]
+        query = ProductsModel.query.filter_by(is_veggie=is_veggie).all()
+        response += query
 
-    if request.args.get("is_veggie"):
-        products_list: list[ProductsModel] = ProductsModel.query.filter_by(is_veggie=request.args.get("is_veggie")).first()
+    if "price" in args and "is_veggie" not in args:
+        price = args["price"]
+        query = ProductsModel.query.filter_by(price=price).all()
+        response += query
 
+    if "price" and "is_veggie" in args:
+        is_veggie = args["is_veggie"]
+        price = args["price"]
+        query = ProductsModel.query.filter_by(price=price, is_veggie=is_veggie).all()
+        response += query
 
-    return products_list
+    list_opcional_atr = []
+
+    for value in response:
+        list_opcional_atr.append({"id": value.id, "price": value.price, "name": value.name, "calories": value.calories, "section": value.section, "is_veggie": value.is_veggie})
+
+    return list_opcional_atr
 
 def get_by_id(id) -> ProductsModel:
     product = ProductsModel.query.get(id)
@@ -72,9 +87,9 @@ def update_product(id: int) -> dict:
     
     query = product.query.get(id)
 
-    for key, value in data.items():
-        if value != None:
-            setattr(query, key, value)
+    for key, valueue in data.items():
+        if valueue != None:
+            setattr(query, key, valueue)
 
     add_commit(query)  
 

@@ -12,5 +12,7 @@ def init_app(app: Flask) -> None:
     from app.models.products_model import ProductsModel
     
     from app.views.products_view import ProductsResource, ProductIDResource
-    api.add_resource(ProductsResource, '/api/products?is_veggie=<is_veggie: bool>', endpoint='PRODUCTS')
+    api.add_resource(ProductsResource, '/api/products', endpoint='PRODUCTS')
     api.add_resource(ProductIDResource, '/api/products/<int:product_id>', endpoint='PRODUCTS_ID')
+
+    
