@@ -13,7 +13,7 @@ def get_by_id(table_id) -> RestaurantTableModel:
     return {}, HTTPStatus.NOT_FOUND
 
 
-def get_all() -> list[RestaurantTableModel]:
+def get_all():
     table_list: list[RestaurantTableModel] = RestaurantTableModel.query.all()
     return jsonify(table_list), HTTPStatus.OK
 

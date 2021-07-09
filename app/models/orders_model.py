@@ -8,13 +8,12 @@ from dataclasses import dataclass
 @dataclass
 class OrdersModel(db.Model):
     table_id: int
-    date: int
-    estimated_arrival: int
+    date: str
+    estimated_arrival: str
     cooking: bool
     ready: bool
     delivered: bool
     paid: bool
-    # products_list: list["ProductsModel"]
 
     __tablename__ = "orders"
 
@@ -31,6 +30,15 @@ class OrdersModel(db.Model):
     table_id = Column(Integer, ForeignKey("restaurant_tables.id"))
     table = relationship("RestaurantTableModel", backref="restaurant_tables")
 
-    # products = relationship("ProductsModel", secondary="products", backref="orders")
+    def serialize(self):
+        return {
+                "id":self.id,
+                "table_id":self.table_id,
+                "date":str(self.date),
+                "estimated_arrival":str(self.estimated_arrival),
+                "cooking":self.cooking,
+                "ready":self.ready,
+                "delivered":self.delivered,
+                "paid":self.paid,
+        }
 
-    # products_list = relationship("ProductsModel", backref=backref("order_list"), secondary="")
