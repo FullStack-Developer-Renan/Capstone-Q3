@@ -1,9 +1,7 @@
 from flask import current_app
 
 
-session = current_app.db.session
-
-
 def add_commit(model) -> None:
+    session = current_app.db.session
     session.add(model)
     session.commit()

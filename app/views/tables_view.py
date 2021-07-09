@@ -2,9 +2,9 @@ from flask_restful import Resource
 from http import HTTPStatus
 
 
-from app.services.tables_services import get_by_id, create_table
+from app.services.tables_services import get_all, create_table, get_table
 
 
 class TablesResource(Resource):
-    def get():
-        return ...
+    def post(self):
+        return create_table()

@@ -21,21 +21,22 @@ def get_all() -> list[RestaurantTableModel]:
 def create_table() -> RestaurantTableModel:
     parser = reqparse.RequestParser()
 
-    parser.add_argument("seats", type=int, required=True)
     parser.add_argument("number", type=int, required=True)
-    parser.add_argument("total", type=int, required=True)
-    parser.add_argument("empty", type=bool, required=True)
+    parser.add_argument("login", type=str, required=True)
     parser.add_argument("password", type=str, required=True)
 
-    password = parser.pop("password")
-    new_table: RestaurantTableModel = RestaurantTableModel(
-        **parser.parse_args(strict=True)
-    )
-    new_table.password = password
+    # password = parser.pop("password")
+    new_table: RestaurantTableModel = RestaurantTableModel(**parser.parse_args())
+    # new_table.password = password
 
     add_commit(new_table)
 
-    return new_table
+    return {
+        "id": new_table.id,
+        "number": new_table.number,
+        "login": new_table.login,
+        "password": new_table.id,
+    }
 
 
 def login_table():
