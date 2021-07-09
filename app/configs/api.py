@@ -13,11 +13,12 @@ def init_app(app: Flask) -> None:
     from app.models.products_model import ProductsModel
     from app.models.employees_model import EmployeesModel
 
-    from app.views.orders_views import OrdersResource, OrderIDResource, OrdersOptionalsResources
+    from app.views.orders_views import OrdersResource, OrderIDResource
 
     api.add_resource(OrdersResource, "/api/orders", endpoint = 'orders')
     api.add_resource(OrderIDResource, "/api/orders/<int:order_id>", endpoint = "order")
-    api.add_resource(OrdersOptionalsResources,"/api/orders?table_id=<int:table_id>&cooking=<cooking>&ready=<ready>&delivered=<delivered>/", endpoint="orders_optionals")
+    # api.add_resource(OrdersOptionalsResources,"/api/orders$table_id=<table_id>&cooking=<cooking>&ready=<ready>&delivered=<delivered>", endpoint="orders_optionals")
+    # api.add_resource(OrdersOptionalsResources,"/api/orders?table_id=<int:table_id>&cooking=<cooking>&ready=<ready>&delivered=<delivered>/", endpoint="orders_optionals")
     
     from app.views.products_view import ProductsResource
     api.add_resource(ProductsResource, '/api/products', endpoint='PRODUCTS')

@@ -3,6 +3,7 @@ from app.models.restaurant_table_model import RestaurantTableModel
 from app.services.helpers import add_commit, delete_commit
 from flask.json import jsonify
 from http import HTTPStatus
+from flask import request
 from ipdb import set_trace ## retirar
 
 from flask_restful import reqparse
@@ -33,7 +34,7 @@ def create_order():     ## OK
         "paid":order.paid,
     }
 
-def get_current_orders(table_id,cooking,ready, delivered) -> dict:
+def get_current_orders(table_id: int, cooking: bool, ready: bool, delivered: bool) -> dict:
     # cooking = eval(cooking) if cooking else False
     # ready = eval(ready) if ready else False
     # delivered = eval(delivered) if delivered else False
@@ -44,24 +45,221 @@ def get_current_orders(table_id,cooking,ready, delivered) -> dict:
     return query, HTTPStatus.OK
 
 def get_orders() -> list[OrdersModel]: ## ok
-    orders_list: list[OrdersModel] = OrdersModel.query.all()
-
+    args = request.args
     response = []
 
-    for query in orders_list:
-            response.append({
-            "id":query.id,
-            "table_id":query.table_id,
-            "date":str(query.date),
-            "estimated_arrival":str(query.estimated_arrival),
-            "cooking":query.cooking,
-            "ready":query.ready,
-            "delivered":query.delivered,
-            "paid":query.paid,
-        })
+    if "table_id" in args and "cooking" not in args and "ready" not in args and "delivered" not in args:
+        table_id = args["table_id"]
+        queries = OrdersModel.query.filter_by(table_id=table_id).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "cooking" in args and "table_id" not in args and "ready" not in args and "delivered" not in args:
+        cooking = args["cooking"]
+        queries = OrdersModel.query.filter_by(cooking=cooking).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+    
+    if "ready" in args and "table_id" not in args and "cooking" not in args and "delivered" not in args:
+        ready = args["ready"]
+        queries = OrdersModel.query.filter_by(ready=ready).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "delivered" in args and "table_id" not in args and "cooking" not in args and "ready" not in args:
+        delivered = args["delivered"]
+        queries = OrdersModel.query.filter_by(delivered=delivered).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+    
+    if "delivered" not in args and "table_id" not in args and "cooking" not in args and "ready" not in args:
+
+        orders_list: list[OrdersModel] = OrdersModel.query.all()
+
+
+
+        for query in orders_list:
+                response.append({
+                "id":query.id,
+                "table_id":query.table_id,
+                "date":str(query.date),
+                "estimated_arrival":str(query.estimated_arrival),
+                "cooking":query.cooking,
+                "ready":query.ready,
+                "delivered":query.delivered,
+                "paid":query.paid,
+            })
+
+        return response
+
+    if "table_id" in args and "cooking" in args and "ready" not in args and "delivered" not in args:
+        table_id = args["table_id"]
+        cooking = args["cooking"]
+        queries = OrdersModel.query.filter_by(table_id=table_id, cooking=cooking).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query    
+    
+    if "table_id" in args and "cooking" not in args and "ready" in args and "delivered" not in args:
+        table_id = args["table_id"]
+        ready = args["ready"]
+        queries = OrdersModel.query.filter_by(table_id=table_id, ready = ready).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "table_id" in args and "cooking" not in args and "ready" not in args and "delivered" in args:
+        table_id = args["table_id"]
+        delivered = args["delivered"]
+        queries = OrdersModel.query.filter_by(table_id=table_id, delivered = delivered).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query 
+
+    if "cooking" in args and "table_id" in args and "ready" not in args and "delivered" not in args:
+        cooking = args["cooking"]
+        table_id = args["table_id"]
+        queries = OrdersModel.query.filter_by(cooking=cooking, table_id=table_id).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "cooking" in args and "table_id" not in args and "ready" in args and "delivered" not in args:
+        cooking = args["cooking"]
+        ready = args["ready"]
+        queries = OrdersModel.query.filter_by(cooking=cooking, ready=ready).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "cooking" in args and "table_id" not in args and "ready" not in args and "delivered" in args:
+        cooking = args["cooking"]
+        delivered = args["delivered"]
+        queries = OrdersModel.query.filter_by(cooking=cooking, delivered=delivered).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "ready" in args and "table_id" in args and "cooking" not in args and "delivered" not in args:
+        ready = args["ready"]
+        table_id = args["table_id"]
+        queries = OrdersModel.query.filter_by(ready=ready, table_id=table_id).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "ready" in args and "table_id" not in args and "cooking" not in args and "delivered" not in args:
+        ready = args["ready"]
+        cooking = args["cooking"]
+        queries = OrdersModel.query.filter_by(ready=ready, cooking=cooking).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "ready" in args and "table_id" not in args and "cooking" not in args and "delivered" not in args:
+        ready = args["ready"]
+        delivered = args["delivered"]
+        queries = OrdersModel.query.filter_by(ready=ready, delivered=delivered).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "delivered" in args and "table_id" in args and "cooking" not in args and "ready" not in args:
+        delivered = args["delivered"]
+        table_id = args["table_id"]
+        queries = OrdersModel.query.filter_by(delivered=delivered, table_id=table_id).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "delivered" in args and "table_id" not in args and "cooking" in args and "ready" not in args:
+        delivered = args["delivered"]
+        cooking = args["cooking"]
+        queries = OrdersModel.query.filter_by(delivered=delivered, cooking=cooking).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "delivered" in args and "table_id" not in args and "cooking" not in args and "ready" in args:
+        delivered = args["delivered"]
+        ready = args["ready"]
+        queries = OrdersModel.query.filter_by(delivered=delivered, ready=ready).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "table_id" in args and "cooking" in args and "ready" in args and "delivered" not in args:
+        table_id = args["table_id"]
+        cooking = args["cooking"]
+        ready = args["ready"]
+        queries = OrdersModel.query.filter_by(table_id=table_id, cooking=cooking,ready=ready).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "table_id" in args and "cooking" in args and "ready" not in args and "delivered" in args:
+        table_id = args["table_id"]
+        cooking = args["cooking"]
+        delivered = args["delivered"]
+        queries = OrdersModel.query.filter_by(table_id=table_id, cooking=cooking, delivered=delivered).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "table_id" in args and "cooking" not in args and "ready" in args and "delivered" in args:
+        table_id = args["table_id"]
+        ready = args["ready"]
+        delivered = args["delivered"]
+        queries = OrdersModel.query.filter_by(table_id=table_id, ready=ready, delivered=delivered).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "table_id" not in args and "cooking" in args and "ready" in args and "delivered" in args:
+        cooking = args["cooking"]
+        ready = args["ready"]
+        delivered = args["delivered"]
+        queries = OrdersModel.query.filter_by(cooking=cooking, ready=ready, delivered=delivered).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
+
+    if "table_id" in args and "cooking" in args and "ready" in args and "delivered" in args:
+        table_id = args["table_id"]
+        cooking = args["cooking"]
+        ready = args["ready"]
+        delivered = args["delivered"]
+        queries = OrdersModel.query.filter_by(table_id=table_id,cooking=cooking, ready=ready, delivered=delivered).all()
+        query = []
+        for order in queries:
+            query.append(order.serialize())
+        response += query
 
     return response
-
 
 def get_order(order_id: int) -> dict: ##ok
     order = OrdersModel()
