@@ -5,7 +5,7 @@ from http import HTTPStatus
 from app.services.tables_services import (
     get_all,
     create_table,
-    get_table,
+    get_by_id,
     delete_table,
     update_table,
 )
@@ -20,11 +20,11 @@ class TablesResource(Resource):
 
 
 class TableIdResource(Resource):
-    def get(self, id: str):
-        return get_table(id)
+    def get(self, id: int):
+        return get_by_id(id)
 
-    def delete(self, id: str):
+    def delete(self, id: int):
         return delete_table(id)
 
-    def patch(self, id: str):
+    def patch(self, id: int):
         return update_table(id)
