@@ -8,7 +8,7 @@ from dataclasses import dataclass
 @dataclass
 class ProductsModel(db.Model):
     id: int
-    recipe: str
+    name: str
     price: int
     calories: int
     section: str
@@ -18,7 +18,7 @@ class ProductsModel(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    name = Column(Text(150), nullable=False)
+    name = Column(String(150), nullable=False)
     price = Column(Float, nullable=False)
     calories = Column(Float)
     section = Column(String(150))
