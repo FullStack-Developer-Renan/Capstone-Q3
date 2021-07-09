@@ -14,8 +14,13 @@ def init_app(app: Flask) -> None:
     from app.views.products_view import ProductsResource
 
     api.add_resource(ProductsResource, "/api/products", endpoint="PRODUCTS")
+    from app.views.users_view import UsersResource, UserIdResource
+
+    api.add_resource(UsersResource, "/api/users", endpoint="USERS")
+    api.add_resource(UsersResource, "/api/users/<int:id>", endpoint="USERS/")
     # api.add_resource(productIDResource, '/api/products/<int:product_id>', endpoint='product')
 
-    from app.views.tables_view import TablesResource
+    from app.views.tables_view import TablesResource, TableIdResource
 
     api.add_resource(TablesResource, "/api/tables", endpoint="CREATE_TABLE")
+    api.add_resource(TableIdResource, "/api/tables/<int:id>", endpoint="TABLES/")

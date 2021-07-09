@@ -1,7 +1,7 @@
 from app.models.users_model import UsersModel
 from flask import jsonify
 from flask_restful import reqparse
-from helpers import add_commit
+from .helpers import add_commit
 
 
 def get_all() -> list[UsersModel]:
@@ -18,8 +18,8 @@ def get_user(user_cpf: str) -> dict:
 def create_user(data) -> dict:
     parser = reqparse.RequestParser()
 
-    parser.add_argument('name', type=str, required=True)
-    parser.add_argument('cpf', type=str, required=True)
+    parser.add_argument("name", type=str, required=True)
+    parser.add_argument("cpf", type=str, required=True)
 
     new_user = UsersModel(**data)
     add_commit(new_user)
@@ -35,4 +35,3 @@ def update_user(id: int, data: dict) -> dict:
 
     add_commit(query)
     return query
-

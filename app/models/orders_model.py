@@ -30,7 +30,3 @@ class OrdersModel(db.Model):
 
     table_id = Column(Integer, ForeignKey("restaurant_tables.id"))
     table = relationship("RestaurantTableModel", backref="restaurant_tables")
-
-    products = relationship("ProductsModel", secondary="products", backref="orders")
-
-    # products_list = relationship("ProductsModel", backref=backref("order_list"), secondary="")

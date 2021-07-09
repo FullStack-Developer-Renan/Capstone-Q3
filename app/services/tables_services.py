@@ -1,4 +1,5 @@
 from flask import jsonify, current_app
+from sqlalchemy.sql.expression import table
 from .helpers import add_commit
 from flask_restful import reqparse
 from app.models.restaurant_table_model import RestaurantTableModel
@@ -25,9 +26,7 @@ def create_table() -> RestaurantTableModel:
     parser.add_argument("login", type=str, required=True)
     parser.add_argument("password", type=str, required=True)
 
-    # password = parser.pop("password")
     new_table: RestaurantTableModel = RestaurantTableModel(**parser.parse_args())
-    # new_table.password = password
 
     add_commit(new_table)
 
@@ -35,24 +34,25 @@ def create_table() -> RestaurantTableModel:
         "id": new_table.id,
         "number": new_table.number,
         "login": new_table.login,
-        "password": new_table.id,
     }
 
 
+# endpoint(LOGIN_TABLE) = '/api/tables/login' -> POST
 def login_table():
     ...
 
 
 # endpoint(DELETE_TABLE) = '/api/tables/<table_id: int>/' -> DELETE
-def delete_table(table_id: int):
+def delete_table(table_id) -> str:
     session = current_app.db.session
 
     found_table = RestaurantTableModel.query.get(table_id)
-
+    print(found_table)
     if not found_table:
         return {"status": "table not found"}, HTTPStatus.NOT_FOUND
 
     session.delete(found_table)
+    session.commit()
 
     return "", HTTPStatus.NO_CONTENT
 
@@ -92,12 +92,16 @@ def get_table(table_id: int):
 
     table = get_by_id(table_id)
 
+    new_table: RestaurantTableModel = RestaurantTableModel(**parser.parse_args())
     add_commit(parser)
 
-    return table, HTTPStatus.OK
+    return {
+        "id": table.id,
+        "seats": table.seats,
+        "number": table.number,
+        "total": table.total,
+        "empty": table.empty,
+    }, HTTPStatus.OK
 
-
-# tables -> GET POST PATCH
 
 # endpoint(GET_TABLES) = '/api/tables?empty=<empty: bool>/' -> GET
-# endpoint(LOGIN_TABLE) = '/api/tables/login' -> POST
