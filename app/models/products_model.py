@@ -1,9 +1,10 @@
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.sql.sqltypes import Float, Text
+from sqlalchemy.sql.sqltypes import Float, String
 from app.configs.database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from dataclasses import dataclass
+
 
 @dataclass
 class ProductsModel(db.Model):
@@ -14,7 +15,7 @@ class ProductsModel(db.Model):
     section: str
     is_veggie: bool
 
-    __tablename__ = 'products'
+    __tablename__ = "products"
 
     id = Column(Integer, primary_key=True)
 
@@ -23,3 +24,7 @@ class ProductsModel(db.Model):
     calories = Column(Float)
     section = Column(String(150))
     is_veggie = Column(Boolean, default=False)
+
+    def serialize(self):
+        return {"id": self.id, "name": self.name, "calories": self.calories, "section": self.section, "is_veggie": self.is_veggie}
+    
