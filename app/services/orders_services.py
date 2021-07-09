@@ -35,9 +35,6 @@ def create_order():     ## OK
     }
 
 def get_current_orders(table_id: int, cooking: bool, ready: bool, delivered: bool) -> dict:
-    # cooking = eval(cooking) if cooking else False
-    # ready = eval(ready) if ready else False
-    # delivered = eval(delivered) if delivered else False
 
     order = OrdersModel()
     query = order.query.filter(order.table_id == table_id,order.cooking == cooking,order.ready == ready,order.delivered == delivered).all()
@@ -135,24 +132,6 @@ def get_orders() -> list[OrdersModel]: ## ok
             query.append(order.serialize())
         response += query 
 
-    if "table_id" in args and "cooking" not in args and "ready" not in args and "delivered" not in args and "paid" in args:
-        table_id = args["table_id"]
-        paid = args["paid"]
-        queries = OrdersModel.query.filter_by(table_id=table_id, paid = paid).all()
-        query = []
-        for order in queries:
-            query.append(order.serialize())
-        response += query 
-
-    if "cooking" in args and "table_id" in args and "ready" not in args and "delivered" not in args and "paid" not in args:
-        cooking = args["cooking"]
-        table_id = args["table_id"]
-        queries = OrdersModel.query.filter_by(cooking=cooking, table_id=table_id).all()
-        query = []
-        for order in queries:
-            query.append(order.serialize())
-        response += query
-
     if "cooking" in args and "table_id" not in args and "ready" in args and "delivered" not in args and "paid" not in args:
         cooking = args["cooking"]
         ready = args["ready"]
@@ -180,24 +159,6 @@ def get_orders() -> list[OrdersModel]: ## ok
             query.append(order.serialize())
         response += query
 
-    if "ready" in args and "table_id" in args and "cooking" not in args and "delivered" not in args and "paid" not in args:
-        ready = args["ready"]
-        table_id = args["table_id"]
-        queries = OrdersModel.query.filter_by(ready=ready, table_id=table_id).all()
-        query = []
-        for order in queries:
-            query.append(order.serialize())
-        response += query
-
-    if "ready" in args and "table_id" not in args and "cooking" in args and "delivered" not in args and "paid" not in args:
-        ready = args["ready"]
-        cooking = args["cooking"]
-        queries = OrdersModel.query.filter_by(ready=ready, cooking=cooking).all()
-        query = []
-        for order in queries:
-            query.append(order.serialize())
-        response += query
-
     if "ready" in args and "table_id" not in args and "cooking" not in args and "delivered" in args and "paid" not in args:
         ready = args["ready"]
         delivered = args["delivered"]
@@ -216,34 +177,7 @@ def get_orders() -> list[OrdersModel]: ## ok
             query.append(order.serialize())
         response += query
 
-    if "delivered" in args and "table_id" in args and "cooking" not in args and "ready" not in args and "paid" not in args:
-        delivered = args["delivered"]
-        table_id = args["table_id"]
-        queries = OrdersModel.query.filter_by(delivered=delivered, table_id=table_id).all()
-        query = []
-        for order in queries:
-            query.append(order.serialize())
-        response += query
-
-    if "delivered" in args and "table_id" not in args and "cooking" in args and "ready" not in args and "paid" not in args:
-        delivered = args["delivered"]
-        cooking = args["cooking"]
-        queries = OrdersModel.query.filter_by(delivered=delivered, cooking=cooking).all()
-        query = []
-        for order in queries:
-            query.append(order.serialize())
-        response += query
-
-    if "delivered" in args and "table_id" not in args and "cooking" not in args and "ready" in args and "paid" not in args:
-        delivered = args["delivered"]
-        ready = args["ready"]
-        queries = OrdersModel.query.filter_by(delivered=delivered, ready=ready).all()
-        query = []
-        for order in queries:
-            query.append(order.serialize())
-        response += query
-
-    if "delivered" in args and "table_id" not in args and "cooking" not in args and "ready" in args and "paid" in args:
+    if "delivered" in args and "table_id" not in args and "cooking" not in args and "ready" not in args and "paid" in args:
         delivered = args["delivered"]
         paid = args["paid"]
         queries = OrdersModel.query.filter_by(delivered=delivered, paid=paid).all()
@@ -256,33 +190,6 @@ def get_orders() -> list[OrdersModel]: ## ok
         paid = args["paid"]
         table_id = args["table_id"]
         queries = OrdersModel.query.filter_by(paid=paid, table_id=table_id).all()
-        query = []
-        for order in queries:
-            query.append(order.serialize())
-        response += query
-
-    if "paid" in args and "table_id" not in args and "cooking" in args and "ready" not in args and "delivered" not in args:
-        paid = args["paid"]
-        cooking = args["cooking"]
-        queries = OrdersModel.query.filter_by(paid=paid, cooking=cooking).all()
-        query = []
-        for order in queries:
-            query.append(order.serialize())
-        response += query
-
-    if "paid" in args and "table_id" not in args and "cooking" not in args and "ready" in args and "delivered" not in args:
-        paid = args["paid"]
-        ready = args["ready"]
-        queries = OrdersModel.query.filter_by(paid=paid, ready=ready).all()
-        query = []
-        for order in queries:
-            query.append(order.serialize())
-        response += query
-
-    if "paid" in args and "table_id" not in args and "cooking" not in args and "ready" not in args and "delivered" in args:
-        paid = args["paid"]
-        delivered = args["delivered"]
-        queries = OrdersModel.query.filter_by(paid=paid, delivered=delivered).all()
         query = []
         for order in queries:
             query.append(order.serialize())
