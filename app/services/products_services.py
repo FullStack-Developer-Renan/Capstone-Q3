@@ -1,3 +1,4 @@
+from app.models.products_orders_model import ProductsOrdersModel
 from sqlalchemy.sql.sqltypes import Text
 from app.models.products_model import ProductsModel
 from flask import jsonify, current_app, request
@@ -115,6 +116,19 @@ def delete_product(id) -> str:
     session.commit()
 
     return "", HTTPStatus.NO_CONTENT
+
+def get_product_by_order_id(order_id):
+
+    products_orders = ProductsOrdersModel.query.filter_by(order_id=order_id).all()
+
+    response = []
+
+    for value in products_orders:
+        product = ProductsModel.query.get(value.product_id)
+        serialize = {"name": product.name, "price": product.price}
+        response.append(serialize)
+    
+    return response
 
 
 
