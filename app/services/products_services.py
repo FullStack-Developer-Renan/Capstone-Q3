@@ -3,8 +3,7 @@ from app.models.products_model import ProductsModel
 from flask import jsonify, current_app, request
 from flask_restful import reqparse
 from http import HTTPStatus
-
-# from ipdb import set_trace
+from ipdb import set_trace
 
 from app.services.helpers import add_commit
 

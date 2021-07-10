@@ -3,17 +3,18 @@ from http import HTTPStatus
 
 
 from app.services.tables_services import (
-    get_all,
+    get_tables,
     create_table,
     get_by_id,
     delete_table,
+    login_table,
     update_table,
 )
 
 
 class TablesResource(Resource):
     def get(self):
-        get_all()
+        return get_tables()
 
     def post(self):
         return create_table()
@@ -28,3 +29,8 @@ class TableIdResource(Resource):
 
     def patch(self, id: int):
         return update_table(id)
+
+
+class TableLoginResource(Resource):
+    def post(self):
+        return login_table()

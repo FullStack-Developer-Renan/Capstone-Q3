@@ -1,14 +1,30 @@
-from flask import jsonify, current_app
-from sqlalchemy.sql.expression import table
-from .helpers import add_commit
+import re
+from flask import jsonify, current_app, request
+from .helpers import add_commit, delete_commit
 from flask_restful import reqparse
 from app.models.restaurant_table_model import RestaurantTableModel
 from http import HTTPStatus
 
+from ipdb import set_trace
 
-def get_all() -> list[RestaurantTableModel]:
-    table_list: list[RestaurantTableModel] = RestaurantTableModel.query.all()
-    return jsonify(table_list), HTTPStatus.OK
+
+def get_all() -> list:
+    table = RestaurantTableModel.query.all()
+
+    response = []
+
+    for value in table:
+        response.append(
+            {
+                "id": value.id,
+                "seats": value.seats,
+                "number": value.number,
+                "total": value.total,
+                "empty": value.empty,
+            }
+        )
+
+    return response, HTTPStatus.OK
 
 
 # endpoint(CREATE_TABLE) = '/api/tables/' -> POST
@@ -32,20 +48,30 @@ def create_table() -> RestaurantTableModel:
 
 # endpoint(LOGIN_TABLE) = '/api/tables/login' -> POST
 def login_table():
-    ...
+
+    parser = reqparse.RequestParser()
+
+    parser.add_argument("login", type=str, required=True)
+    parser.add_argument("password", type=str, required=True)
+
+    data = parser.parse_args()
+
+    user: RestaurantTableModel = RestaurantTableModel.query.filter_by(
+        login=data["login"]
+    ).first()
+
+    if user.check_password(data["password"]):
+        return {"msg": "Sucess login"}, HTTPStatus.OK
 
 
 # endpoint(DELETE_TABLE) = '/api/tables/<table_id: int>/' -> DELETE
 def delete_table(table_id) -> str:
-    session = current_app.db.session
-
     found_table = RestaurantTableModel.query.get(table_id)
-    print(found_table)
+
     if not found_table:
         return {"status": "table not found"}, HTTPStatus.NOT_FOUND
 
-    session.delete(found_table)
-    session.commit()
+    delete_commit(found_table)
 
     return "", HTTPStatus.NO_CONTENT
 
@@ -58,6 +84,8 @@ def update_table(table_id: int) -> RestaurantTableModel:
     parser.add_argument("number", type=int, required=False)
     parser.add_argument("total", type=int, required=False)
     parser.add_argument("empty", type=bool, required=False)
+    parser.add_argument("password", type=str, required=False)
+    parser.add_argument("login", type=str, required=False)
 
     data = parser.parse_args(strict=True)
 
@@ -78,12 +106,14 @@ def update_table(table_id: int) -> RestaurantTableModel:
         "number": table.number,
         "total": table.total,
         "empty": table.empty,
+        "login": table.login,
     }, HTTPStatus.OK
 
 
 # endpoint(GET_TABLE) = '/api/tables/<table_id: int>/' -> GET
 def get_by_id(table_id) -> RestaurantTableModel:
     table = RestaurantTableModel.query.get(table_id)
+
     if table:
         return {
             "id": table.id,
@@ -97,9 +127,27 @@ def get_by_id(table_id) -> RestaurantTableModel:
 
 
 # endpoint(GET_TABLES) = '/api/tables?empty=<empty: bool>/' -> GET
+def get_tables() -> dict:
+    args = request.args
+    response = []
 
-# parser.add_argument("seats", type=int, required=True)
-# parser.add_argument("number", type=int, required=True)
-# parser.add_argument("total", type=int, required=True)
-# parser.add_argument("empty", type=bool, required=True)
-# parser.add_argument("password", type=str, required=True)
+    if "empty" in args:
+        empty = args["empty"]
+        query = RestaurantTableModel.query.filter_by(empty=empty).all()
+        response += query
+
+        list = []
+        for table in response:
+            list.append(
+                {
+                    "id": table.id,
+                    "seats": table.seats,
+                    "number": table.number,
+                    "total": table.total,
+                    "empty": table.empty,
+                }
+            )
+
+        return list
+
+    return get_all()

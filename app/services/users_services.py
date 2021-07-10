@@ -1,7 +1,7 @@
 from app.models.users_model import UsersModel
 from flask import jsonify
 from flask_restful import reqparse
-from .helpers import add_commit
+from app.services.helpers import add_commit
 
 
 def get_all() -> list[UsersModel]:
