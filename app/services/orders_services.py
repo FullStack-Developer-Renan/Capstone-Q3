@@ -1,3 +1,6 @@
+from app.services.products_services import get_product_by_order_id
+from app.services.products_orders_services import relate_product_order
+from sqlalchemy.sql.sqltypes import ARRAY
 from app.models.orders_model import OrdersModel
 from app.models.restaurant_table_model import RestaurantTableModel
 from app.services.helpers import add_commit, delete_commit
@@ -18,10 +21,18 @@ def create_order():     ## OK
     parser.add_argument("ready", type = bool)
     parser.add_argument("delivered", type = bool)
     parser.add_argument("paid", type = bool)
+    parser.add_argument("products", type = list, location = "json")
 
-    order: OrdersModel = OrdersModel(**parser.parse_args(strict=True))
+    args = parser.parse_args(strict=True)
+
+    products = args.pop('products')
+
+    order: OrdersModel = OrdersModel(**args)
     
     add_commit(order)
+
+    for i in products: 
+        relate_product_order(order.id, i)
 
     return {
         "id":order.id,
@@ -31,7 +42,7 @@ def create_order():     ## OK
         "cooking":order.cooking,
         "ready":order.ready,
         "delivered":order.delivered,
-        "paid":order.paid,
+        "paid":order.paid,   
     }
 
 def get_current_orders(table_id: int, cooking: bool, ready: bool, delivered: bool) -> dict:
@@ -41,7 +52,7 @@ def get_current_orders(table_id: int, cooking: bool, ready: bool, delivered: boo
 
     return query, HTTPStatus.OK
 
-def get_orders() -> list[OrdersModel]: ## ok
+def get_orders(): ## ok
     args = request.args
     response = []
 
@@ -87,9 +98,7 @@ def get_orders() -> list[OrdersModel]: ## ok
     
     if "delivered" not in args and "table_id" not in args and "cooking" not in args and "ready" not in args and "paid" not in args:
 
-        orders_list: list[OrdersModel] = OrdersModel.query.all()
-
-
+        orders_list: list[OrdersModel] = OrdersModel.query.all() 
 
         for query in orders_list:
                 response.append({
@@ -101,6 +110,7 @@ def get_orders() -> list[OrdersModel]: ## ok
                 "ready":query.ready,
                 "delivered":query.delivered,
                 "paid":query.paid,
+                "products": get_product_by_order_id(query.id)
             })
 
         return response

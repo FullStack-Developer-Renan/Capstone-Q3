@@ -1,3 +1,4 @@
+from app.models.products_orders_model import ProductsOrdersModel
 from sqlalchemy.sql.sqltypes import Text
 from app.models.products_model import ProductsModel
 from flask import jsonify, current_app, request
@@ -34,16 +35,7 @@ def get_all() -> dict:
     list_opcional_atr = []
 
     for value in response:
-        list_opcional_atr.append(
-            {
-                "id": value.id,
-                "price": value.price,
-                "name": value.name,
-                "calories": value.calories,
-                "section": value.section,
-                "is_veggie": value.is_veggie,
-            }
-        )
+        list_opcional_atr.append(value.serialize())
 
     return list_opcional_atr
 
@@ -71,7 +63,11 @@ def create_product() -> ProductsModel:
     parser.add_argument("section", type=str, required=False)
     parser.add_argument("is_veggie", type=bool, required=False)
 
-    new_product: ProductsModel = ProductsModel(**parser.parse_args())
+    args = parser.parse_args(strict=True)
+
+    set_trace()
+
+    new_product: ProductsModel = ProductsModel(**args)
 
     add_commit(new_product)
 
@@ -125,3 +121,17 @@ def delete_product(id) -> str:
     session.commit()
 
     return "", HTTPStatus.NO_CONTENT
+
+
+def get_product_by_order_id(order_id):
+
+    products_orders = ProductsOrdersModel.query.filter_by(order_id=order_id).all()
+
+    response = []
+
+    for value in products_orders:
+        product = ProductsModel.query.get(value.product_id)
+        serialize = {"name": product.name, "price": product.price}
+        response.append(serialize)
+
+    return response
