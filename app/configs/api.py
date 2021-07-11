@@ -13,9 +13,15 @@ def init_app(app: Flask) -> None:
     from app.models.employees_model import EmployeesModel
 
     from app.views.orders_views import OrdersResource, OrderIDResource
+    from app.views.employees_view import EmployeeIDResource, EmployeesResource, EmployeeLoginResource
 
-    api.add_resource(OrdersResource, "/api/orders", endpoint="orders")
-    api.add_resource(OrderIDResource, "/api/orders/<int:order_id>", endpoint="order")
+    api.add_resource(EmployeesResource, "/api/employees", endpoint="EMPLOYEES")
+    api.add_resource(EmployeeIDResource, "/api/employees/<int:employee_id>", endpoint="EMPLOYEE_ID")
+    api.add_resource(EmployeeLoginResource, "/api/employees/login", endpoint="EMPLOYEE_LOGIN")
+
+
+    api.add_resource(OrdersResource, "/api/orders", endpoint="ORDERS")
+    api.add_resource(OrderIDResource, "/api/orders/<int:order_id>", endpoint="ORDER")
 
     from app.views.products_view import ProductsResource, ProductIDResource
 
@@ -27,7 +33,7 @@ def init_app(app: Flask) -> None:
     from app.views.users_view import UsersResource, UserIdResource
 
     api.add_resource(UsersResource, "/api/users", endpoint="USERS")
-    api.add_resource(UsersResource, "/api/users/<int:id>", endpoint="USERS/")
+    api.add_resource(UsersResource, "/api/users/<int:id>", endpoint="USER_ID")
 
     from app.views.tables_view import (
         TablesResource,
@@ -36,5 +42,5 @@ def init_app(app: Flask) -> None:
     )
 
     api.add_resource(TablesResource, "/api/tables", endpoint="TABLE")
-    api.add_resource(TableLoginResource, "/api/tables/login", endpoint="TABLE/LOGIN")
-    api.add_resource(TableIdResource, "/api/tables/<int:id>", endpoint="TABLES/")
+    api.add_resource(TableLoginResource, "/api/tables/login", endpoint="TABLE_LOGIN")
+    api.add_resource(TableIdResource, "/api/tables/<int:id>", endpoint="TABLES")
