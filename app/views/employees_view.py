@@ -1,7 +1,7 @@
 from flask_restful import Resource
-from http import HTTPStatus
+from flask_jwt_extended import jwt_required
 
-from app.services.employees_services import get_all, get_by_id, update_employee, create_employee, delete_employee
+from app.services.employees_services import get_all, get_by_id, update_employee, create_employee, delete_employee, login
 
 class EmployeesResource(Resource):
     def get(self):
@@ -20,3 +20,6 @@ class EmployeeIDResource(Resource):
     def delete(self, employee_id: int):
         return delete_employee(employee_id)
 
+class EmployeeLoginResource(Resource):
+    def post(self):
+        return login()
