@@ -41,9 +41,6 @@ def login() -> dict:
         return {
             "message": "Invalid password or login information"
         }, HTTPStatus.UNAUTHORIZED
-        
-
-    pass
 
 def create_employee() -> EmployeesModel:
     parser = reqparse.RequestParser()
