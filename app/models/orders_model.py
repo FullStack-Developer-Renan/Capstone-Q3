@@ -30,7 +30,6 @@ class OrdersModel(db.Model):
     table_id = Column(Integer, ForeignKey("restaurant_tables.id"))
     table = relationship("RestaurantTableModel", backref="restaurant_tables")
 
-
     def serialize(self):
         return {
                 "id":self.id,

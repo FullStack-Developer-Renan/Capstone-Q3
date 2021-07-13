@@ -1,3 +1,4 @@
+from app.models.products_orders_model import ProductsOrdersModel
 from sqlalchemy.sql.sqltypes import Text
 from app.models.products_model import ProductsModel
 from flask import jsonify, current_app, request
@@ -6,7 +7,9 @@ from http import HTTPStatus
 from ipdb import set_trace
 
 from app.services.helpers import add_commit
+
 # /api/products?section=<section:bool>?is_veggie=<is_veggie:bool>
+
 
 def get_all() -> dict:
 
@@ -32,21 +35,22 @@ def get_all() -> dict:
     list_opcional_atr = []
 
     for value in response:
-        list_opcional_atr.append({"id": value.id, "price": value.price, "name": value.name, "calories": value.calories, "section": value.section, "is_veggie": value.is_veggie})
+        list_opcional_atr.append(value.serialize())
 
     return list_opcional_atr
+
 
 def get_by_id(id) -> ProductsModel:
     product = ProductsModel.query.get(id)
     if product:
         return {
-        "id": product.id,
-        "name": product.name,
-        "price": product.price,
-        "calories": product.calories,
-        "section": product.section,
-        "is_veggie": product.is_veggie,       
-    }, HTTPStatus.OK
+            "id": product.id,
+            "name": product.name,
+            "price": product.price,
+            "calories": product.calories,
+            "section": product.section,
+            "is_veggie": product.is_veggie,
+        }, HTTPStatus.OK
     return {}, HTTPStatus.NOT_FOUND
 
 
@@ -59,7 +63,11 @@ def create_product() -> ProductsModel:
     parser.add_argument("section", type=str, required=False)
     parser.add_argument("is_veggie", type=bool, required=False)
 
-    new_product: ProductsModel = ProductsModel(**parser.parse_args())
+    args = parser.parse_args(strict=True)
+
+    set_trace()
+
+    new_product: ProductsModel = ProductsModel(**args)
 
     add_commit(new_product)
 
@@ -69,8 +77,9 @@ def create_product() -> ProductsModel:
         "price": new_product.price,
         "calories": new_product.calories,
         "section": new_product.section,
-        "is_veggie": new_product.is_veggie,       
+        "is_veggie": new_product.is_veggie,
     }
+
 
 def update_product(id: int) -> dict:
 
@@ -84,14 +93,14 @@ def update_product(id: int) -> dict:
     data = parser.parse_args(strict=True)
 
     product = ProductsModel()
-    
+
     query = product.query.get(id)
 
     for key, valueue in data.items():
         if valueue != None:
             setattr(query, key, valueue)
 
-    add_commit(query)  
+    add_commit(query)
 
     return {
         "id": query.id,
@@ -99,8 +108,9 @@ def update_product(id: int) -> dict:
         "price": query.price,
         "calories": query.calories,
         "section": query.section,
-        "is_veggie": query.is_veggie,       
+        "is_veggie": query.is_veggie,
     }
+
 
 def delete_product(id) -> str:
     session = current_app.db.session
@@ -113,4 +123,15 @@ def delete_product(id) -> str:
     return "", HTTPStatus.NO_CONTENT
 
 
+def get_product_by_order_id(order_id):
 
+    products_orders = ProductsOrdersModel.query.filter_by(order_id=order_id).all()
+
+    response = []
+
+    for value in products_orders:
+        product = ProductsModel.query.get(value.product_id)
+        serialize = {"name": product.name, "price": product.price}
+        response.append(serialize)
+
+    return response
