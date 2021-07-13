@@ -111,6 +111,23 @@
 
 ***
 
+### ![DELETE](./assets/img/DELETE.svg) DELETE_EMPLOYEE
+```
+/api/employees/<employee_id: int>/
+```
+#### Header
+```
+```
+
+#### Response
+```json
+""
+```
+<br>
+<br>
+
+***
+
 ## **USERS**
 <br>
 
@@ -200,7 +217,6 @@
 #### Body
 ```json
 {
-    "id": 1,
     "name": "Joseph Rodrigues",
     "total_spent": 522.35
 }
@@ -210,7 +226,7 @@
 ```json
 {
     "id": 1,
-    "name": "Joseph Climber",
+    "name": "Joseph Rodrigues",
     "cpf": "047222222222",
     "total_spent": 522.35
 }
@@ -231,33 +247,6 @@
 ```
 #### Response
 ```json
-{
-    "id": 1,
-    "number": 1,
-    "seats": 6,
-    "user": {
-                "id": 1,
-                "name": "Joseph Climber",
-                "cpf": "047222222222",
-                "total_spent": 522.35
-            },
-    "total": 127.48,
-    "empty": "False",
-    "orders_list": /api/orders/1
-}
-```
-<br>
-<br>
-
-### ![GET](./assets/img/GET.svg) GET_TABLE
-```
-/api/tables/table_id=<table_id: int>/
-```
-#### Header
-```
-```
-#### Response
-```json
 [
     {
         "id": 1,
@@ -271,18 +260,45 @@
                 },
         "total": 127.48,
         "empty": "False",
-        "orders_list": /api/orders/1
+        "orders_list": "/api/orders/1"
     },
     {
         "id": 2,
         "number": 1,
         "seats": 6,
-        "user": {},                    },
+        "user": {},
         "total": 127.48,
         "empty": "True",
-        "orders_list": /api/orders/2
+        "orders_list": "/api/orders/2"
     }
 ]
+```
+<br>
+<br>
+
+### ![GET](./assets/img/GET.svg) GET_TABLE
+```
+/api/tables/table_id=<table_id: int>/
+```
+#### Header
+```
+```
+#### Response
+```json
+{
+    "id": 1,
+    "number": 1,
+    "seats": 6,
+    "user": {
+                "id": 1,
+                "name": "Joseph Climber",
+                "cpf": "047222222222",
+                "total_spent": 522.35
+            },
+    "total": 127.48,
+    "empty": "False",
+    "orders_list": "/api/orders/1"
+}
 ```
 <br>
 <br>
@@ -294,10 +310,20 @@
 #### Header
 ```
 ```
+#### Body
+```json
+{
+    "login": "table01",
+    "password": "table01",
+    "number": 1,
+    "seats": 6
+}
+```
 #### Response
 ```json
 {
     "id": 1,
+    "login": "table01",
     "number": 1,
     "seats": 6,
     "empty": "True",
@@ -348,8 +374,8 @@
 ```
 ```
 #### Response
-```json6
-    'Table deleted'
+```js
+    ''
 ```
 <br>
 <br>
@@ -371,7 +397,7 @@
 #### Response
 ```json
 {
-    //FALTA IMPLEMENTAR
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjIxNDA3NSwianRpIjoiMWJjMDE5ZTktNzY2OS00MzJmLWJhMDctMzE0MjgxZTg0ODU5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJpZCI6MiwibmFtZSI6Ikx1Y2FzIEpvc2Vmb3ZpY3oiLCJsb2dpbiI6Imx1Y2FzIn0sIm5iZiI6MTYyNjIxNDA3NSwiZXhwIjoxNjI2MjE0OTc1fQ.Mj5yzf4ENLntgmnTs8Hvlvwqa_FI_T1fh_1uQiKy6fU"
 }
 ```
 <br>
@@ -589,10 +615,8 @@
 ```
 ```
 #### Response
-```json
-{
-    "message": "Order Deleted!"
-}
+```js
+""
 ```
 <br>
 <br>
@@ -717,10 +741,8 @@
 ```
 ```
 #### Response
-```json
-{
-    "message": "Product Deleted!"
-}
+```js
+""
 ```
 <br>
 <br>
