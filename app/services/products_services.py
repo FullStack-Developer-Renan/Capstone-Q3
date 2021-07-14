@@ -1,21 +1,24 @@
+from app.services.products_orders_services import delete_product_order_by_product
 from app.models.products_orders_model import ProductsOrdersModel
-from sqlalchemy.sql.sqltypes import Text
 from app.models.products_model import ProductsModel
-from flask import jsonify, current_app, request
+from flask import request
 from flask_restful import reqparse
 from http import HTTPStatus
 from ipdb import set_trace
 
-from app.services.helpers import add_commit
+from app.services.helpers import add_commit, delete_commit
+
 # /api/products?section=<section:bool>?is_veggie=<is_veggie:bool>
+
 
 def get_all() -> dict:
 
     args = request.args
     response = []
 
+
     if "is_veggie" in args and "price" not in args:
-        is_veggie = args["is_veggie"]
+        is_veggie = args["is_veggie"]     
         query = ProductsModel.query.filter_by(is_veggie=is_veggie).all()
         response += query
 
@@ -24,12 +27,17 @@ def get_all() -> dict:
         query = ProductsModel.query.filter_by(price=price).all()
         response += query
 
-    if "price" and "is_veggie" in args:
+    if "price" in args and "is_veggie" in args:
         is_veggie = args["is_veggie"]
         price = args["price"]
         query = ProductsModel.query.filter_by(price=price, is_veggie=is_veggie).all()
         response += query
+    
+    if "price" not in args and "is_veggie" not in args:
+        query = ProductsModel.query.all()
+        response += query
 
+    
     list_opcional_atr = []
 
     for value in response:
@@ -37,17 +45,18 @@ def get_all() -> dict:
 
     return list_opcional_atr
 
+
 def get_by_id(id) -> ProductsModel:
     product = ProductsModel.query.get(id)
     if product:
         return {
-        "id": product.id,
-        "name": product.name,
-        "price": product.price,
-        "calories": product.calories,
-        "section": product.section,
-        "is_veggie": product.is_veggie,       
-    }, HTTPStatus.OK
+            "id": product.id,
+            "name": product.name,
+            "price": product.price,
+            "calories": product.calories,
+            "section": product.section,
+            "is_veggie": product.is_veggie,
+        }, HTTPStatus.OK
     return {}, HTTPStatus.NOT_FOUND
 
 
@@ -62,8 +71,6 @@ def create_product() -> ProductsModel:
 
     args = parser.parse_args(strict=True)
 
-    set_trace()
-
     new_product: ProductsModel = ProductsModel(**args)
 
     add_commit(new_product)
@@ -74,8 +81,9 @@ def create_product() -> ProductsModel:
         "price": new_product.price,
         "calories": new_product.calories,
         "section": new_product.section,
-        "is_veggie": new_product.is_veggie,       
+        "is_veggie": new_product.is_veggie,
     }
+
 
 def update_product(id: int) -> dict:
 
@@ -89,14 +97,17 @@ def update_product(id: int) -> dict:
     data = parser.parse_args(strict=True)
 
     product = ProductsModel()
-    
+
     query = product.query.get(id)
+
+    if not query:
+        raise("Error")
 
     for key, valueue in data.items():
         if valueue != None:
             setattr(query, key, valueue)
 
-    add_commit(query)  
+    add_commit(query)
 
     return {
         "id": query.id,
@@ -104,18 +115,20 @@ def update_product(id: int) -> dict:
         "price": query.price,
         "calories": query.calories,
         "section": query.section,
-        "is_veggie": query.is_veggie,       
+        "is_veggie": query.is_veggie,
     }
 
+
 def delete_product(id) -> str:
-    session = current_app.db.session
 
     product = ProductsModel.query.get(id)
 
-    session.delete(product)
-    session.commit()
+    delete_product_order_by_product(product.id)
+
+    delete_commit(product)
 
     return "", HTTPStatus.NO_CONTENT
+
 
 def get_product_by_order_id(order_id):
 
@@ -125,10 +138,26 @@ def get_product_by_order_id(order_id):
 
     for value in products_orders:
         product = ProductsModel.query.get(value.product_id)
-        serialize = {"name": product.name, "price": product.price}
-        response.append(serialize)
+        # serialize = {"name": product.name, "price": product.price}
+        response.append(product)
+
+    def remove_repetidos(lista):
+        l = []
+        for i in lista:
+            if i not in l:
+                l.append(i)
+
+        return l
+
+    lista = remove_repetidos(response)
     
-    return response
+    results = []
+
+    for elem in lista:
+        quantity = response.count(elem)
+        serialize = {"name": elem.name, "price": elem.price, "quantity": quantity}
+        results.append(serialize)
 
 
 
+    return results
