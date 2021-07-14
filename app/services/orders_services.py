@@ -1,10 +1,6 @@
-from app.services.products_services import get_product_by_order_id
-from app.services.products_orders_services import relate_product_order
-from sqlalchemy.sql.sqltypes import ARRAY
+from app.services.products_orders_services import delete_product_order_by_order, relate_product_order
 from app.models.orders_model import OrdersModel
-from app.models.restaurant_table_model import RestaurantTableModel
 from app.services.helpers import add_commit, delete_commit
-from flask.json import jsonify
 from http import HTTPStatus
 from flask import request
 from ipdb import set_trace ## retirar
@@ -47,7 +43,7 @@ def create_order():     ## OK
 
 def get_current_orders(table_id: int, cooking: bool, ready: bool, delivered: bool) -> dict:
 
-    order = OrdersModel()
+    order = OrdersModel
     query = order.query.filter(order.table_id == table_id,order.cooking == cooking,order.ready == ready,order.delivered == delivered).all()
 
     return query, HTTPStatus.OK
@@ -98,20 +94,10 @@ def get_orders(): ## ok
     
     if "delivered" not in args and "table_id" not in args and "cooking" not in args and "ready" not in args and "paid" not in args:
 
-        orders_list: list[OrdersModel] = OrdersModel.query.all() 
+        orders_list = OrdersModel.query.all() 
 
         for query in orders_list:
-                response.append({
-                "id":query.id,
-                "table_id":query.table_id,
-                "date":str(query.date),
-                "estimated_arrival":str(query.estimated_arrival),
-                "cooking":query.cooking,
-                "ready":query.ready,
-                "delivered":query.delivered,
-                "paid":query.paid,
-                "products": get_product_by_order_id(query.id)
-            })
+                response.append(query.serialize())
 
         return response
 
@@ -275,7 +261,7 @@ def get_orders(): ## ok
     return response
 
 def get_order(order_id: int) -> dict: ##ok
-    order = OrdersModel()
+    order = OrdersModel
 
     query = order.query.get(order_id)
 
@@ -295,8 +281,11 @@ def get_order(order_id: int) -> dict: ##ok
 
 def remove_order(id:int) -> None: ##ok
 
-    order = OrdersModel()
+    order = OrdersModel
     query = order.query.get(id)
+
+    delete_product_order_by_order(query.id)
+
     delete_commit(query)
 
     return ""
@@ -316,8 +305,12 @@ def update_order(id: int) -> dict:
 
     data = parser.parse_args(strict=True)
 
-    order = OrdersModel()
+    order = OrdersModel
+    
     query = order.query.get(id)
+
+    if not query:
+        raise("Error")
 
     for key, value in data.items():
         if value != None:

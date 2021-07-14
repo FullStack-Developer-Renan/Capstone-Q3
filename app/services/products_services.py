@@ -1,12 +1,12 @@
 from app.models.products_orders_model import ProductsOrdersModel
-from sqlalchemy.sql.sqltypes import Text
 from app.models.products_model import ProductsModel
-from flask import jsonify, current_app, request
+from flask import request
 from flask_restful import reqparse
 from http import HTTPStatus
 from ipdb import set_trace
 
-from app.services.helpers import add_commit
+
+from app.services.helpers import add_commit, delete_commit
 
 # /api/products?section=<section:bool>?is_veggie=<is_veggie:bool>
 
@@ -16,8 +16,9 @@ def get_all() -> dict:
     args = request.args
     response = []
 
+
     if "is_veggie" in args and "price" not in args:
-        is_veggie = args["is_veggie"]
+        is_veggie = args["is_veggie"]     
         query = ProductsModel.query.filter_by(is_veggie=is_veggie).all()
         response += query
 
@@ -26,12 +27,17 @@ def get_all() -> dict:
         query = ProductsModel.query.filter_by(price=price).all()
         response += query
 
-    if "price" and "is_veggie" in args:
+    if "price" in args and "is_veggie" in args:
         is_veggie = args["is_veggie"]
         price = args["price"]
         query = ProductsModel.query.filter_by(price=price, is_veggie=is_veggie).all()
         response += query
+    
+    if "price" not in args and "is_veggie" not in args:
+        query = ProductsModel.query.all()
+        response += query
 
+    
     list_opcional_atr = []
 
     for value in response:
@@ -65,8 +71,6 @@ def create_product() -> ProductsModel:
 
     args = parser.parse_args(strict=True)
 
-    set_trace()
-
     new_product: ProductsModel = ProductsModel(**args)
 
     add_commit(new_product)
@@ -79,7 +83,6 @@ def create_product() -> ProductsModel:
         "section": new_product.section,
         "is_veggie": new_product.is_veggie,
     }
-
 
 def update_product(id: int) -> dict:
 
@@ -95,6 +98,9 @@ def update_product(id: int) -> dict:
     product = ProductsModel()
 
     query = product.query.get(id)
+
+    if not query:
+        raise("Error")
 
     for key, valueue in data.items():
         if valueue != None:
@@ -112,17 +118,6 @@ def update_product(id: int) -> dict:
     }
 
 
-def delete_product(id) -> str:
-    session = current_app.db.session
-
-    product = ProductsModel.query.get(id)
-
-    session.delete(product)
-    session.commit()
-
-    return "", HTTPStatus.NO_CONTENT
-
-
 def get_product_by_order_id(order_id):
 
     products_orders = ProductsOrdersModel.query.filter_by(order_id=order_id).all()
@@ -131,7 +126,42 @@ def get_product_by_order_id(order_id):
 
     for value in products_orders:
         product = ProductsModel.query.get(value.product_id)
-        serialize = {"name": product.name, "price": product.price}
-        response.append(serialize)
+        # serialize = {"name": product.name, "price": product.price}
+        response.append(product)
 
-    return response
+    def remove_repetidos(lista):
+        l = []
+        for i in lista:
+            if i not in l:
+                l.append(i)
+
+        return l
+
+    lista = remove_repetidos(response)
+    
+    results = []
+
+    for elem in lista:
+        quantity = response.count(elem)
+        serialize = {"name": elem.name, "price": elem.price, "quantity": quantity}
+        results.append(serialize)
+
+
+
+    return results
+
+
+def delete_product(id):
+
+    prod = ProductsModel
+
+    product = prod.query.get(id)
+
+    query = ProductsOrdersModel.query.filter_by(product_id=product.id).all()
+
+    for elem in query: 
+        delete_commit(elem)
+
+    delete_commit(product)
+
+    return "", HTTPStatus.NO_CONTENT

@@ -17,7 +17,7 @@ def check_cpf(data) -> bool:
         return True
     return False
 
-def get_all() -> list[EmployeesModel]:
+def get_all() -> list:
     employees_list: list[EmployeesModel] = EmployeesModel.query.all()
     return [employee.serialize() for employee in employees_list], HTTPStatus.OK
 
