@@ -62,6 +62,9 @@ def create_employee() -> EmployeesModel:
     parser.add_argument("password", type=str, required=True)
 
     data = parser.parse_args()
+
+    if data['cpf'] != None and len(data['cpf']) != 11:
+        return {"message": "CPF must have 11 digits"}
     
     if get_employee_by_login(data) or check_cpf(data):
         raise DuplicatedKeys
@@ -87,6 +90,9 @@ def update_employee(id) -> EmployeesModel:
         return "", HTTPStatus.NOT_FOUND
     
     data = parser.parse_args(strict=True)
+
+    if data['cpf'] != None and len(data['cpf']) != 11:
+        return {"message": "CPF must have 11 digits"}, HTTPStatus.BAD_REQUEST
 
     for key,value in data.items():
         if value != None:
