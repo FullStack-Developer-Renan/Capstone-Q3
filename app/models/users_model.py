@@ -16,3 +16,6 @@ class UsersModel(db.Model):
     cpf = Column(String(11), nullable=False, unique=True)
     name = Column(String(150), nullable=False)
     total = Column(Float, default=0)
+
+    def serialize(self):
+        return {"id": self.id, "name": self.name, "cpf": self.cpf, "total": self.total}
