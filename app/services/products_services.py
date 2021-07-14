@@ -1,10 +1,10 @@
-from app.services.products_orders_services import delete_product_order_by_product
 from app.models.products_orders_model import ProductsOrdersModel
 from app.models.products_model import ProductsModel
 from flask import request
 from flask_restful import reqparse
 from http import HTTPStatus
 from ipdb import set_trace
+
 
 from app.services.helpers import add_commit, delete_commit
 
@@ -84,7 +84,6 @@ def create_product() -> ProductsModel:
         "is_veggie": new_product.is_veggie,
     }
 
-
 def update_product(id: int) -> dict:
 
     parser = reqparse.RequestParser()
@@ -119,17 +118,6 @@ def update_product(id: int) -> dict:
     }
 
 
-def delete_product(id) -> str:
-
-    product = ProductsModel.query.get(id)
-
-    delete_product_order_by_product(product.id)
-
-    delete_commit(product)
-
-    return "", HTTPStatus.NO_CONTENT
-
-
 def get_product_by_order_id(order_id):
 
     products_orders = ProductsOrdersModel.query.filter_by(order_id=order_id).all()
@@ -161,3 +149,19 @@ def get_product_by_order_id(order_id):
 
 
     return results
+
+
+def delete_product(id):
+
+    prod = ProductsModel
+
+    product = prod.query.get(id)
+
+    query = ProductsOrdersModel.query.filter_by(product_id=product.id).all()
+
+    for elem in query: 
+        delete_commit(elem)
+
+    delete_commit(product)
+
+    return "", HTTPStatus.NO_CONTENT

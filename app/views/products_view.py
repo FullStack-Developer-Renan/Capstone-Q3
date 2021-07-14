@@ -1,11 +1,9 @@
-from flask.json import jsonify
 from flask_restful import Resource
 from http import HTTPStatus
 from sqlalchemy.exc import DataError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 
 # from ipdb import set_trace
-from flask import request
 
 from app.services.products_services import (
     get_all,
