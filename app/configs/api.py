@@ -33,7 +33,7 @@ def init_app(app: Flask) -> None:
     from app.views.users_view import UsersResource, UserIdResource
 
     api.add_resource(UsersResource, "/api/users", endpoint="USERS")
-    api.add_resource(UsersResource, "/api/users/<int:id>", endpoint="USER_ID")
+    api.add_resource(UserIdResource, "/api/users/<int:user_id>", endpoint="USERS_ID")
 
     from app.views.tables_view import (
         TablesResource,
