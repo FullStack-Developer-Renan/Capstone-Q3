@@ -1,20 +1,30 @@
 from app.models.employees_model import EmployeesModel
-from flask import jsonify, current_app
+from flask import current_app
 from flask_restful import reqparse
 from http import HTTPStatus
 from flask_jwt_extended import create_access_token
 
 from app.services.helpers import add_commit
+from app.exc import DuplicatedKeys
 
+def get_employee_by_login(data) -> EmployeesModel:
+    user: EmployeesModel = EmployeesModel.query.filter_by(login=data['login']).first()
+    return user
+
+def check_cpf(data) -> bool:
+    user: EmployeesModel = EmployeesModel.query.filter_by(cpf=data['cpf']).first()
+    if user:
+        return True
+    return False
 
 def get_all() -> list[EmployeesModel]:
     employees_list: list[EmployeesModel] = EmployeesModel.query.all()
-    return jsonify(employees_list), HTTPStatus.OK
+    return [employee.serialize() for employee in employees_list], HTTPStatus.OK
 
 def get_by_id(id) -> EmployeesModel:
-    employee = EmployeesModel.query.get(id)
+    employee: EmployeesModel = EmployeesModel.query.get(id)
     if employee:
-        return employee, HTTPStatus.OK
+        return employee.serialize(), HTTPStatus.OK
     return "", HTTPStatus.NOT_FOUND
 
 def login() -> dict:
@@ -52,6 +62,9 @@ def create_employee() -> EmployeesModel:
     parser.add_argument("password", type=str, required=True)
 
     data = parser.parse_args()
+    
+    if get_employee_by_login(data) or check_cpf(data):
+        raise DuplicatedKeys
 
     new_employee: EmployeesModel = EmployeesModel(**data)
 
@@ -69,12 +82,15 @@ def update_employee(id) -> EmployeesModel:
     parser.add_argument("is_admin", type=bool, required=False)
     parser.add_argument("password", type=str, required=False)
 
-    employee = get_by_id(id)
+    employee:EmployeesModel = EmployeesModel.query.get(id)
     if not employee:
         return "", HTTPStatus.NOT_FOUND
     
-    for key, value in parser.parse_args(strict=True):
-        setattr(employee, key, value)
+    data = parser.parse_args(strict=True)
+
+    for key,value in data.items():
+        if value != None:
+            setattr(employee, key, value)
     
     add_commit(employee)
 
