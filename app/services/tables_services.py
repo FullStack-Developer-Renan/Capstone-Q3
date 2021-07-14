@@ -1,12 +1,9 @@
-import re
-from flask import jsonify, current_app, request
+from flask import request
 from .helpers import add_commit, delete_commit
 from flask_restful import reqparse
 from app.models.restaurant_table_model import RestaurantTableModel
 from http import HTTPStatus
-
-from ipdb import set_trace
-
+from flask_jwt_extended import create_access_token
 
 def get_all() -> list:
     table = RestaurantTableModel.query.all()
@@ -60,8 +57,20 @@ def login_table():
         login=data["login"]
     ).first()
 
-    if user.check_password(data["password"]):
-        return {"msg": "Sucess login"}, HTTPStatus.OK
+    if not user:
+        return {
+            "message": "User not Found"
+        }, HTTPStatus.NOT_FOUND
+
+    if user.check_password(data['password']):
+        token = create_access_token(identity=user)
+        return {
+            "token": token
+        }, HTTPStatus.OK
+    else:
+        return {
+            "message": "Invalid password or login information"
+        }, HTTPStatus.UNAUTHORIZED
 
 
 # endpoint(DELETE_TABLE) = '/api/tables/<table_id: int>/' -> DELETE
