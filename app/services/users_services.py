@@ -3,6 +3,7 @@ from app.models.users_model import UsersModel
 from flask import jsonify, request
 from flask_restful import reqparse
 from app.services.helpers import add_commit, delete_commit
+from ipdb import set_trace
 
 
 def get_all():
@@ -12,18 +13,22 @@ def get_all():
 
     if "cpf" in args and "name" not in args:
         cpf = args['cpf']
-        query = UsersModel.query.filter_by(cpf=cpf).all()
+        query = UsersModel.query.filter_by(cpf=cpf).first()
         response.append(query)
 
     if "name" in args and "cpf" not in args:
         name = args['name']
-        query = UsersModel.query.filter_by(name=name).first()
+        query = UsersModel.query.filter_by(name=name).all()
         response += query
 
-    if "name" and "cpf" in args:
+    if "name" in args and "cpf" in args:
         name = args['name']
         cpf = args['cpf']
-        query = UsersModel.query.filter_by(name=name, cpf=cpf).fist()
+        query = UsersModel.query.filter_by(name=name, cpf=cpf).all()
+        response += query
+
+    if "cpf" not in args and "name" not in args:
+        query = UsersModel.query.all()
         response += query
 
     list_optional_atr = []
@@ -31,8 +36,6 @@ def get_all():
     for value in response:
         list_optional_atr.append(value.serialize())
 
-    from ipdb import set_trace
-    set_trace()
     return list_optional_atr
 
 
@@ -53,15 +56,28 @@ def create_user():
     return {"id": new_user.id, "name": new_user.name, "cpf": new_user.cpf}
 
 
-def update_user(id: int, data: dict) -> dict:
+def update_user(id: int) -> dict:
+    parser = reqparse.RequestParser()
+    parser.add_argument("name", type=str)
+    parser.add_argument("cpf", type=str)
+    parser.add_argument("total", type=float)
+
+    data = parser.parse_args(strict=True)
+
     user = UsersModel()
+
     query = user.query.get(id)
 
+    if not query:
+        raise("Error")
+
     for key, value in data.items():
-        setattr(query, key, value)
+        if value != None:
+            setattr(query, key, value)
 
     add_commit(query)
-    return query
+    return query.serialize()
+
 
 def delete_user(id: int):
     query = UsersModel.query.get(id)
