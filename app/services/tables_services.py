@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from .helpers import add_commit, delete_commit
 from flask_restful import reqparse
 from app.models.restaurant_table_model import RestaurantTableModel
@@ -20,8 +20,12 @@ def get_all() -> list:
                 "empty": value.empty,
             }
         )
-
+    
     return response, HTTPStatus.OK
+
+def get_all():
+    table_list: list[RestaurantTableModel] = RestaurantTableModel.query.all()
+    return jsonify(table_list), HTTPStatus.OK
 
 
 # endpoint(CREATE_TABLE) = '/api/tables/' -> POST

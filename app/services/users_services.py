@@ -1,7 +1,8 @@
+from http import HTTPStatus
 from app.models.users_model import UsersModel
 from flask import jsonify
 from flask_restful import reqparse
-from app.services.helpers import add_commit
+from app.services.helpers import add_commit, delete_commit
 
 
 def get_all():
@@ -35,3 +36,10 @@ def update_user(id: int, data: dict) -> dict:
 
     add_commit(query)
     return query
+
+def delete_user(id: int):
+    query = UsersModel.query.get(id)
+
+    delete_commit(query)
+
+    return "", HTTPStatus.NO_CONTENT
