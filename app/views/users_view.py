@@ -28,6 +28,7 @@ class UserIdResource(Resource):
         except DataError as _:
             return {"Message": "Invalid CPF"}, HTTPStatus.UNPROCESSABLE_ENTITY
 
+
     @jwt_required()
     def delete(self, user_id: int):
         try:
