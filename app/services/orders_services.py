@@ -30,16 +30,7 @@ def create_order():     ## OK
     for i in products: 
         relate_product_order(order.id, i)
 
-    return {
-        "id":order.id,
-        "table_id":order.table_id,
-        "date":str(order.date),
-        "estimated_arrival":str(order.estimated_arrival),
-        "cooking":order.cooking,
-        "ready":order.ready,
-        "delivered":order.delivered,
-        "paid":order.paid,   
-    }
+    return order.serialize()
 
 def get_current_orders(table_id: int, cooking: bool, ready: bool, delivered: bool) -> dict:
 
@@ -95,11 +86,10 @@ def get_orders(): ## ok
     if "delivered" not in args and "table_id" not in args and "cooking" not in args and "ready" not in args and "paid" not in args:
 
         orders_list = OrdersModel.query.all() 
-
-        for query in orders_list:
-                response.append(query.serialize())
-
-        return response
+        query=[]
+        for order in orders_list:
+            query.append(order.serialize())
+        response+=query
 
     if "table_id" in args and "cooking" in args and "ready" not in args and "delivered" not in args and "paid" not in args:
         table_id = args["table_id"]

@@ -64,7 +64,7 @@ def create_employee() -> EmployeesModel:
     data = parser.parse_args()
 
     if data['cpf'] != None and len(data['cpf']) != 11:
-        return {"message": "CPF must have 11 digits"}
+        raise("Error")
     
     if get_employee_by_login(data) or check_cpf(data):
         raise DuplicatedKeys
