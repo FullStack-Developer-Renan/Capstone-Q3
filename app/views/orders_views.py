@@ -18,7 +18,7 @@ class OrdersResource(Resource):
             return {"Message": "Table_Id doesn't exist"}, HTTPStatus.UNPROCESSABLE_ENTITY
         except DataError as _:
             return {"Message": "Invalid parameter value!"}, HTTPStatus.UNPROCESSABLE_ENTITY
-    @jwt_required
+    @jwt_required()
     def get(self):
         
         try:
@@ -29,11 +29,11 @@ class OrdersResource(Resource):
 
 
 class OrderIDResource(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self, order_id: int):
         return get_order(order_id)
         
-    @jwt_required
+    @jwt_required()
     def delete(self, order_id: int):
         try:
             return remove_order(order_id), HTTPStatus.NO_CONTENT
@@ -44,7 +44,7 @@ class OrderIDResource(Resource):
         except AttributeError as _:
             return {"error":"Order doesn't exists"}, HTTPStatus.UNPROCESSABLE_ENTITY
     
-    @jwt_required
+    @jwt_required()
     def patch(self, order_id: int):
         try:
             return update_order(order_id), HTTPStatus.CREATED
