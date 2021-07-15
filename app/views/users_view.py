@@ -3,10 +3,11 @@ from http import HTTPStatus
 from app.services.users_services import get_all, delete_user, update_user, create_user
 from sqlalchemy.exc import DataError
 from sqlalchemy.orm.exc import UnmappedInstanceError
-from ipdb import set_trace
+from flask_jwt_extended import jwt_required
 
 
 class UsersResource(Resource):
+    @jwt_required()
     def get(self):
         return get_all(), HTTPStatus.OK
 
@@ -18,6 +19,7 @@ class UsersResource(Resource):
 
 
 class UserIdResource(Resource):
+    @jwt_required()
     def patch(self, user_id: int):
         try:
             return update_user(user_id), HTTPStatus.OK
@@ -26,6 +28,7 @@ class UserIdResource(Resource):
         except DataError as _:
             return {"Message": "Invalid CPF"}, HTTPStatus.UNPROCESSABLE_ENTITY
 
+    @jwt_required()
     def delete(self, user_id: int):
         try:
             return delete_user(user_id), HTTPStatus.NO_CONTENT
