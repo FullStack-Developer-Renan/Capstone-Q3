@@ -26,6 +26,8 @@ class EmployeesResource(Resource):
             return {"error": "Duplicated information"}, HTTPStatus.BAD_REQUEST
         except IntegrityError:
             return {"error": "Wrong lenght of parameters"}, HTTPStatus.BAD_REQUEST
+        except TypeError as _:
+            return {"message": "CPF must have 11 digits"}, HTTPStatus.BAD_REQUEST
 
 
 class EmployeeIDResource(Resource):
