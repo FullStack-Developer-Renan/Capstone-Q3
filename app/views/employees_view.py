@@ -4,7 +4,15 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import DataError, IntegrityError
 
-from app.services.employees_services import get_all, get_by_id, update_employee, create_employee, delete_employee, login
+from app.services.employees_services import (
+    get_all,
+    get_by_id,
+    update_employee,
+    create_employee,
+    delete_employee,
+    login,
+)
+
 
 class EmployeesResource(Resource):
     @jwt_required()
@@ -19,9 +27,10 @@ class EmployeesResource(Resource):
         except IntegrityError:
             return {"error": "Wrong lenght of parameters"}, HTTPStatus.BAD_REQUEST
 
+
 class EmployeeIDResource(Resource):
     @jwt_required()
-    def get(self, employee_id: int): 
+    def get(self, employee_id: int):
         return get_by_id(employee_id)
 
     @jwt_required()
@@ -36,6 +45,7 @@ class EmployeeIDResource(Resource):
     @jwt_required()
     def delete(self, employee_id: int):
         return delete_employee(employee_id)
+
 
 class EmployeeLoginResource(Resource):
     def post(self):

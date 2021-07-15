@@ -47,10 +47,10 @@ class RestaurantTableModel(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "seats": self.seats,
+            "login": self.login,
             "number": self.number,
+            "seats": self.seats,
+            "user": self.user_id,
             "total": self.total,
             "empty": self.empty,
-            "login": self.login,
-            "user_id": self.user_id,
         }
