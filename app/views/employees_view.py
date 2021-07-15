@@ -18,8 +18,7 @@ class EmployeesResource(Resource):
     @jwt_required()
     def get(self):
         return get_all()
-
-    # @jwt_required()
+    
     def post(self):
         try:
             return create_employee()

@@ -7,7 +7,6 @@ from flask_jwt_extended import jwt_required
 
 
 class UsersResource(Resource):
-    #jwtrequired
     @jwt_required()
     def get(self):
         return get_all(), HTTPStatus.OK
@@ -20,7 +19,6 @@ class UsersResource(Resource):
 
 
 class UserIdResource(Resource):
-    # jwtrequired
     @jwt_required()
     def patch(self, user_id: int):
         try:
@@ -30,7 +28,6 @@ class UserIdResource(Resource):
         except DataError as _:
             return {"Message": "Invalid CPF"}, HTTPStatus.UNPROCESSABLE_ENTITY
 
-    # jwtrequired
     @jwt_required()
     def delete(self, user_id: int):
         try:
