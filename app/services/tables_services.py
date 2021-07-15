@@ -20,6 +20,17 @@ def get_all() -> list:
 
     return response, HTTPStatus.OK
 
+def get_all():
+    table_list: list[RestaurantTableModel] = RestaurantTableModel.query.all()
+    return jsonify(table_list), HTTPStatus.OK
+
+
+def get_table_by_login(data) -> RestaurantTableModel:
+    table: RestaurantTableModel = RestaurantTableModel.query.filter_by(
+        login=data["login"]
+    ).first()
+    return table
+
 
 def get_table_by_login(data) -> RestaurantTableModel:
     table: RestaurantTableModel = RestaurantTableModel.query.filter_by(
