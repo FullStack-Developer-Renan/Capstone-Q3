@@ -20,10 +20,6 @@ def get_all() -> list:
 
     return response, HTTPStatus.OK
 
-def get_all():
-    table_list: list[RestaurantTableModel] = RestaurantTableModel.query.all()
-    return jsonify(table_list), HTTPStatus.OK
-
 
 def get_table_by_login(data) -> RestaurantTableModel:
     table: RestaurantTableModel = RestaurantTableModel.query.filter_by(
@@ -32,19 +28,13 @@ def get_table_by_login(data) -> RestaurantTableModel:
     return table
 
 
-def get_table_by_login(data) -> RestaurantTableModel:
-    table: RestaurantTableModel = RestaurantTableModel.query.filter_by(
-        login=data["login"]
-    ).first()
-    return table
-
-
-# endpoint(CREATE_TABLE) = '/api/tables/' -> POST
 def create_table() -> RestaurantTableModel:
 
     parser = reqparse.RequestParser()
 
     parser.add_argument("number", type=int, required=True)
+    parser.add_argument("seats", type=int, required=True)
+    parser.add_argument("empty", type=bool, required=False)
     parser.add_argument("login", type=str, required=True)
     parser.add_argument("password", type=str, required=True)
 
@@ -59,8 +49,10 @@ def create_table() -> RestaurantTableModel:
 
     return {
         "id": new_table.id,
-        "number": new_table.number,
         "login": new_table.login,
+        "number": new_table.number,
+        "seats": new_table.seats,
+        "empty": new_table.empty,
     }
 
 
@@ -103,8 +95,8 @@ def delete_table(table_id) -> str:
 def update_table(table_id: int) -> RestaurantTableModel:
     parser = reqparse.RequestParser()
 
-    parser.add_argument("seats", type=int, required=False)
     parser.add_argument("number", type=int, required=False)
+    parser.add_argument("seats", type=int, required=False)
     parser.add_argument("total", type=int, required=False)
     parser.add_argument("empty", type=bool, required=False)
     parser.add_argument("password", type=str, required=False)
@@ -122,15 +114,19 @@ def update_table(table_id: int) -> RestaurantTableModel:
             setattr(table, key, value)
 
     add_commit(table)
+    value_serialize = table.serialize()
+    value_serialize["orders_list"] = f"/api/orders?table_id={table.id}"
 
-    return table.serialize(), HTTPStatus.OK
+    return value_serialize, HTTPStatus.OK
 
 
 def get_by_id(table_id) -> RestaurantTableModel:
     table = RestaurantTableModel.query.get(table_id)
 
     if table:
-        return table.serialize(), HTTPStatus.OK
+        value_serialize = table.serialize()
+        value_serialize["orders_list"] = f"/api/orders?table_id={table.id}"
+        return value_serialize, HTTPStatus.OK
 
     return {"status": "table not found!"}, HTTPStatus.NOT_FOUND
 
