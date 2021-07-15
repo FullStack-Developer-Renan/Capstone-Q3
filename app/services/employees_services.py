@@ -25,7 +25,7 @@ def get_by_id(id) -> EmployeesModel:
     employee: EmployeesModel = EmployeesModel.query.get(id)
     if employee:
         return employee.serialize(), HTTPStatus.OK
-    return "", HTTPStatus.NOT_FOUND
+    return {}, HTTPStatus.NOT_FOUND
 
 def login() -> dict:
     parser = reqparse.RequestParser()
@@ -39,7 +39,7 @@ def login() -> dict:
 
     if not user:
         return {
-            "message": "User not Found"
+            "error": "User not Found"
         }, HTTPStatus.NOT_FOUND
 
     if user.check_password(data['password']):
@@ -49,7 +49,7 @@ def login() -> dict:
         }, HTTPStatus.OK
     else:
         return {
-            "message": "Invalid password or login information"
+            "error": "Invalid password or login information"
         }, HTTPStatus.UNAUTHORIZED
 
 def create_employee() -> EmployeesModel:
@@ -61,7 +61,7 @@ def create_employee() -> EmployeesModel:
     parser.add_argument("is_admin", type=bool, required=False)
     parser.add_argument("password", type=str, required=True)
 
-    data = parser.parse_args()
+    data = parser.parse_args(strict=True)
 
     if data['cpf'] != None and len(data['cpf']) != 11:
         raise("Error")
@@ -87,12 +87,12 @@ def update_employee(id) -> EmployeesModel:
 
     employee:EmployeesModel = EmployeesModel.query.get(id)
     if not employee:
-        return "", HTTPStatus.NOT_FOUND
+        raise("Error")
     
     data = parser.parse_args(strict=True)
 
     if data['cpf'] != None and len(data['cpf']) != 11:
-        return {"message": "CPF must have 11 digits"}, HTTPStatus.BAD_REQUEST
+        return {"error": "CPF must have 11 digits"}, HTTPStatus.BAD_REQUEST
 
     for key,value in data.items():
         if value != None:

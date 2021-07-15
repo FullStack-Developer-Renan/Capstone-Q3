@@ -1,10 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import Float, String
 from app.configs.database import db
-from werkzeug.security import generate_password_hash, check_password_hash
 from dataclasses import dataclass
-
 
 @dataclass
 class ProductsModel(db.Model):

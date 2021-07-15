@@ -6,7 +6,7 @@ from werkzeug.exceptions import NotFound
 from app.exc import DuplicatedKeys
 
 from app.services.tables_services import (
-    get_tables,
+    get_all,
     create_table,
     get_by_id,
     delete_table,
@@ -19,9 +19,11 @@ class TablesResource(Resource):
     @jwt_required()
     def get(self):
         try:
-            return get_tables()
+            return get_all()
         except DataError:
-            return {"error": "Invalid parameter value"}, HTTPStatus.UNPROCESSABLE_ENTITY
+            return {"error": "Invalid parameter value"}, HTTPStatus.NOT_FOUND
+        except TypeError:
+            return {"error": "Invalid parameter value"}, HTTPStatus.NOT_FOUND
 
     @jwt_required()
     def post(self):

@@ -11,34 +11,59 @@ def get_all() -> dict:
     args = request.args
     response = []
 
-
-    if "is_veggie" in args and "price" not in args:
-        is_veggie = args["is_veggie"]     
+    if "is_veggie" in args and "price" not in args and "section" not in args:
+        is_veggie = args["is_veggie"]
         query = ProductsModel.query.filter_by(is_veggie=is_veggie).all()
         response += query
 
-    if "price" in args and "is_veggie" not in args:
+    if "is_veggie" not in args and "price" in args and "section" not in args:
         price = args["price"]
         query = ProductsModel.query.filter_by(price=price).all()
         response += query
+    
+    if "is_veggie" not in args and "price" not in args and "section" in args:
+        section = args["section"]
+        query = ProductsModel.query.filter_by(section=section).all()
+        response += query
 
-    if "price" in args and "is_veggie" in args:
+    if "is_veggie" in args and "price" not in args and "section" in args:
         is_veggie = args["is_veggie"]
-        price = args["price"]
-        query = ProductsModel.query.filter_by(price=price, is_veggie=is_veggie).all()
+        section = args["section"]
+        query = ProductsModel.query.filter_by(is_veggie=is_veggie, section=section).all()
         response += query
     
-    if "price" not in args and "is_veggie" not in args:
+    if "is_veggie" in args and "price" in args and "section" not in args:
+        is_veggie = args["is_veggie"]
+        price = args["price"]
+        query = ProductsModel.query.filter_by(is_veggie=is_veggie, price=price).all()
+        response += query
+    
+    if "is_veggie" not in args and "price" in args and "section" in args:
+        price = args["price"]
+        section = args["section"]
+        query = ProductsModel.query.filter_by(price=price, section=section).all()
+        response += query
+    
+    if "is_veggie" in args and "price" in args and "section" in args:
+        is_veggie = args["is_veggie"]
+        price = args["price"]
+        section = args["section"]
+        query = ProductsModel.query.filter_by(is_veggie=is_veggie,price=price, section=section).all()
+        response += query
+
+    if "is_veggie" not in args and "price" not in args and "section" not in args:
         query = ProductsModel.query.all()
         response += query
 
-    
-    list_opcional_atr = []
+    if response != []:
+        list_optional_atr = []
 
-    for value in response:
-        list_opcional_atr.append(value.serialize())
+        for value in response:
+            list_optional_atr.append(value.serialize())
 
-    return list_opcional_atr
+        return list_optional_atr
+    else:
+        return []
 
 
 def get_by_id(id) -> ProductsModel:
@@ -93,7 +118,7 @@ def update_product(id: int) -> dict:
 
 def get_product_by_order_id(order_id):
 
-    products_orders = ProductsOrdersModel.query.filter_by(order_id=order_id).all()
+    products_orders =ProductsOrdersModel.query.filter_by(order_id=order_id).all()
 
     response = []
 
@@ -128,7 +153,10 @@ def delete_product(id):
 
     product = prod.query.get(id)
 
-    query = ProductsOrdersModel.query.filter_by(product_id=product.id).all()
+    if not product:
+        raise("Error")
+
+    query =ProductsOrdersModel.query.filter_by(product_id=product.id).all()
 
     for elem in query: 
         delete_commit(elem)

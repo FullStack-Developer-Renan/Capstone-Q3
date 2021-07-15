@@ -2,7 +2,6 @@ from app.configs.database import db
 from sqlalchemy import Column, Integer, String, Float
 from dataclasses import dataclass
 
-
 @dataclass
 class UsersModel(db.Model):
     id: int

@@ -1,4 +1,4 @@
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from app.configs.database import db
 
@@ -50,7 +50,7 @@ class RestaurantTableModel(db.Model):
             "login": self.login,
             "number": self.number,
             "seats": self.seats,
-            "user": self.user_id,
+            "user_id": self.user_id,
             "total": self.total,
             "empty": self.empty,
         }

@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request
 from werkzeug.exceptions import NotFound
 from .helpers import add_commit, delete_commit
 from flask_restful import reqparse
@@ -9,16 +9,42 @@ from app.exc import DuplicatedKeys
 
 
 def get_all() -> list:
-    table = RestaurantTableModel.query.all()
-
+    args = request.args
     response = []
 
-    for value in table:
-        value_serialize = value.serialize()
-        value_serialize["orders_list"] = f"/api/orders?table_id={value.id}"
-        response.append(value_serialize)
+    if "empty" in args and "number" not in args:
+        empty = args['empty']
+        query = RestaurantTableModel.query.filter_by(empty=empty).all()
+        response += query
 
-    return response, HTTPStatus.OK
+    if "number" in args and "empty" not in args:
+        number = args['number']
+        query = RestaurantTableModel.query.filter_by(number=number).all()
+        response += query
+
+    if "number" in args and "empty" in args:
+        number = args['number']
+        empty = args['empty']
+        query = RestaurantTableModel.query.filter_by(number=number, empty=empty).all()
+        response += query
+
+    if "empty" not in args and "number" not in args:
+        query = RestaurantTableModel.query.all()
+        response += query
+    
+    if response == []:
+        raise("Error")
+
+    if response[0] == None:
+        raise("Error")
+
+    list_optional_atr = []
+
+    for value in response:
+        list_optional_atr.append(value.serialize())
+
+    return list_optional_atr
+
 
 
 def get_table_by_login(data) -> RestaurantTableModel:
@@ -77,7 +103,7 @@ def login_table():
         return {"token": token}, HTTPStatus.OK
     else:
         return {
-            "message": "Invalid password or login information"
+            "error": "Invalid password or login information"
         }, HTTPStatus.UNAUTHORIZED
 
 
@@ -131,19 +157,3 @@ def get_by_id(table_id) -> RestaurantTableModel:
     return {"status": "table not found!"}, HTTPStatus.NOT_FOUND
 
 
-def get_tables() -> dict:
-    args = request.args
-    response = []
-
-    if "empty" in args:
-        empty = args["empty"]
-        query = RestaurantTableModel.query.filter_by(empty=empty).all()
-        response += query
-
-        list = []
-        for table in response:
-            list.append(table.serialize())
-
-        return list
-
-    return get_all()
