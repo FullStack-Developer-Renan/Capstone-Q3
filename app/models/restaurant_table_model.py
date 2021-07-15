@@ -43,3 +43,14 @@ class RestaurantTableModel(db.Model):
 
     def check_password(self, password_to_compare):
         return check_password_hash(self.password_hash, password_to_compare)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "seats": self.seats,
+            "number": self.number,
+            "total": self.total,
+            "empty": self.empty,
+            "login": self.login,
+            "user_id": self.user_id,
+        }
