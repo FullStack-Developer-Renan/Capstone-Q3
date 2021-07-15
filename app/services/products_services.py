@@ -3,60 +3,73 @@ from app.models.products_model import ProductsModel
 from flask import request
 from flask_restful import reqparse
 from http import HTTPStatus
-from ipdb import set_trace
-
 
 from app.services.helpers import add_commit, delete_commit
-
-# /api/products?section=<section:bool>?is_veggie=<is_veggie:bool>
-
 
 def get_all() -> dict:
 
     args = request.args
     response = []
 
-
-    if "is_veggie" in args and "price" not in args:
-        is_veggie = args["is_veggie"]     
+    if "is_veggie" in args and "price" not in args and "section" not in args:
+        is_veggie = args["is_veggie"]
         query = ProductsModel.query.filter_by(is_veggie=is_veggie).all()
         response += query
 
-    if "price" in args and "is_veggie" not in args:
+    if "is_veggie" not in args and "price" in args and "section" not in args:
         price = args["price"]
         query = ProductsModel.query.filter_by(price=price).all()
         response += query
+    
+    if "is_veggie" not in args and "price" not in args and "section" in args:
+        section = args["section"]
+        query = ProductsModel.query.filter_by(section=section).all()
+        response += query
 
-    if "price" in args and "is_veggie" in args:
+    if "is_veggie" in args and "price" not in args and "section" in args:
         is_veggie = args["is_veggie"]
-        price = args["price"]
-        query = ProductsModel.query.filter_by(price=price, is_veggie=is_veggie).all()
+        section = args["section"]
+        query = ProductsModel.query.filter_by(is_veggie=is_veggie, section=section).all()
         response += query
     
-    if "price" not in args and "is_veggie" not in args:
+    if "is_veggie" in args and "price" in args and "section" not in args:
+        is_veggie = args["is_veggie"]
+        price = args["price"]
+        query = ProductsModel.query.filter_by(is_veggie=is_veggie, price=price).all()
+        response += query
+    
+    if "is_veggie" not in args and "price" in args and "section" in args:
+        price = args["price"]
+        section = args["section"]
+        query = ProductsModel.query.filter_by(price=price, section=section).all()
+        response += query
+    
+    if "is_veggie" in args and "price" in args and "section" in args:
+        is_veggie = args["is_veggie"]
+        price = args["price"]
+        section = args["section"]
+        query = ProductsModel.query.filter_by(is_veggie=is_veggie,price=price, section=section).all()
+        response += query
+
+    if "is_veggie" not in args and "price" not in args and "section" not in args:
         query = ProductsModel.query.all()
         response += query
 
-    
-    list_opcional_atr = []
+    if response != []:
+        list_optional_atr = []
 
-    for value in response:
-        list_opcional_atr.append(value.serialize())
+        for value in response:
+            list_optional_atr.append(value.serialize())
 
-    return list_opcional_atr
+        return list_optional_atr
+    else:
+        return []
 
 
 def get_by_id(id) -> ProductsModel:
     product = ProductsModel.query.get(id)
     if product:
-        return {
-            "id": product.id,
-            "name": product.name,
-            "price": product.price,
-            "calories": product.calories,
-            "section": product.section,
-            "is_veggie": product.is_veggie,
-        }, HTTPStatus.OK
+        return product.serialize(), HTTPStatus.OK
     return {}, HTTPStatus.NOT_FOUND
 
 
@@ -75,14 +88,7 @@ def create_product() -> ProductsModel:
 
     add_commit(new_product)
 
-    return {
-        "id": new_product.id,
-        "name": new_product.name,
-        "price": new_product.price,
-        "calories": new_product.calories,
-        "section": new_product.section,
-        "is_veggie": new_product.is_veggie,
-    }
+    return new_product.serialize()
 
 def update_product(id: int) -> dict:
 
@@ -108,19 +114,11 @@ def update_product(id: int) -> dict:
 
     add_commit(query)
 
-    return {
-        "id": query.id,
-        "name": query.name,
-        "price": query.price,
-        "calories": query.calories,
-        "section": query.section,
-        "is_veggie": query.is_veggie,
-    }
-
+    return query.serialize()
 
 def get_product_by_order_id(order_id):
 
-    products_orders = ProductsOrdersModel.query.filter_by(order_id=order_id).all()
+    products_orders =ProductsOrdersModel.query.filter_by(order_id=order_id).all()
 
     response = []
 
@@ -146,8 +144,6 @@ def get_product_by_order_id(order_id):
         serialize = {"name": elem.name, "price": elem.price, "quantity": quantity}
         results.append(serialize)
 
-
-
     return results
 
 
@@ -157,7 +153,10 @@ def delete_product(id):
 
     product = prod.query.get(id)
 
-    query = ProductsOrdersModel.query.filter_by(product_id=product.id).all()
+    if not product:
+        raise("Error")
+
+    query =ProductsOrdersModel.query.filter_by(product_id=product.id).all()
 
     for elem in query: 
         delete_commit(elem)

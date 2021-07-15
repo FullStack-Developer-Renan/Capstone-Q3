@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request
 from werkzeug.exceptions import NotFound
 from .helpers import add_commit, delete_commit
 from flask_restful import reqparse
@@ -9,20 +9,42 @@ from app.exc import DuplicatedKeys
 
 
 def get_all() -> list:
-    table = RestaurantTableModel.query.all()
-
+    args = request.args
     response = []
 
-    for value in table:
-        value_serialize = value.serialize()
-        value_serialize["orders_list"] = f"/api/orders?table_id={value.id}"
-        response.append(value_serialize)
+    if "empty" in args and "number" not in args:
+        empty = args['empty']
+        query = RestaurantTableModel.query.filter_by(empty=empty).all()
+        response += query
 
-    return response, HTTPStatus.OK
+    if "number" in args and "empty" not in args:
+        number = args['number']
+        query = RestaurantTableModel.query.filter_by(number=number).all()
+        response += query
 
-def get_all():
-    table_list: list[RestaurantTableModel] = RestaurantTableModel.query.all()
-    return jsonify(table_list), HTTPStatus.OK
+    if "number" in args and "empty" in args:
+        number = args['number']
+        empty = args['empty']
+        query = RestaurantTableModel.query.filter_by(number=number, empty=empty).all()
+        response += query
+
+    if "empty" not in args and "number" not in args:
+        query = RestaurantTableModel.query.all()
+        response += query
+    
+    if response == []:
+        raise("Error")
+
+    if response[0] == None:
+        raise("Error")
+
+    list_optional_atr = []
+
+    for value in response:
+        list_optional_atr.append(value.serialize())
+
+    return list_optional_atr
+
 
 
 def get_table_by_login(data) -> RestaurantTableModel:
@@ -32,12 +54,13 @@ def get_table_by_login(data) -> RestaurantTableModel:
     return table
 
 
-# endpoint(CREATE_TABLE) = '/api/tables/' -> POST
 def create_table() -> RestaurantTableModel:
 
     parser = reqparse.RequestParser()
 
     parser.add_argument("number", type=int, required=True)
+    parser.add_argument("seats", type=int, required=True)
+    parser.add_argument("empty", type=bool, required=False)
     parser.add_argument("login", type=str, required=True)
     parser.add_argument("password", type=str, required=True)
 
@@ -52,8 +75,10 @@ def create_table() -> RestaurantTableModel:
 
     return {
         "id": new_table.id,
-        "number": new_table.number,
         "login": new_table.login,
+        "number": new_table.number,
+        "seats": new_table.seats,
+        "empty": new_table.empty,
     }
 
 
@@ -78,7 +103,7 @@ def login_table():
         return {"token": token}, HTTPStatus.OK
     else:
         return {
-            "message": "Invalid password or login information"
+            "error": "Invalid password or login information"
         }, HTTPStatus.UNAUTHORIZED
 
 
@@ -96,8 +121,8 @@ def delete_table(table_id) -> str:
 def update_table(table_id: int) -> RestaurantTableModel:
     parser = reqparse.RequestParser()
 
-    parser.add_argument("seats", type=int, required=False)
     parser.add_argument("number", type=int, required=False)
+    parser.add_argument("seats", type=int, required=False)
     parser.add_argument("total", type=int, required=False)
     parser.add_argument("empty", type=bool, required=False)
     parser.add_argument("password", type=str, required=False)
@@ -115,32 +140,20 @@ def update_table(table_id: int) -> RestaurantTableModel:
             setattr(table, key, value)
 
     add_commit(table)
+    value_serialize = table.serialize()
+    value_serialize["orders_list"] = f"/api/orders?table_id={table.id}"
 
-    return table.serialize(), HTTPStatus.OK
+    return value_serialize, HTTPStatus.OK
 
 
 def get_by_id(table_id) -> RestaurantTableModel:
     table = RestaurantTableModel.query.get(table_id)
 
     if table:
-        return table.serialize(), HTTPStatus.OK
+        value_serialize = table.serialize()
+        value_serialize["orders_list"] = f"/api/orders?table_id={table.id}"
+        return value_serialize, HTTPStatus.OK
 
     return {"status": "table not found!"}, HTTPStatus.NOT_FOUND
 
 
-def get_tables() -> dict:
-    args = request.args
-    response = []
-
-    if "empty" in args:
-        empty = args["empty"]
-        query = RestaurantTableModel.query.filter_by(empty=empty).all()
-        response += query
-
-        list = []
-        for table in response:
-            list.append(table.serialize())
-
-        return list
-
-    return get_all()
