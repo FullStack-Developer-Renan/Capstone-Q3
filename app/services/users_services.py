@@ -1,9 +1,8 @@
 from http import HTTPStatus
 from app.models.users_model import UsersModel
-from flask import jsonify, request
+from flask import request
 from flask_restful import reqparse
 from app.services.helpers import add_commit, delete_commit
-from ipdb import set_trace
 
 
 def get_all():
