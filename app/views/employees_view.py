@@ -3,6 +3,7 @@ from app.exc import DuplicatedKeys
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import DataError, IntegrityError
+from sqlalchemy.orm.exc import UnmappedInstanceError
 
 from app.services.employees_services import (
     get_all,
@@ -23,11 +24,11 @@ class EmployeesResource(Resource):
         try:
             return create_employee()
         except DuplicatedKeys:
-            return {"error": "Duplicated information"}, HTTPStatus.BAD_REQUEST
+            return {"error": "Duplicated information!"}, HTTPStatus.BAD_REQUEST
         except IntegrityError:
-            return {"error": "Wrong lenght of parameters"}, HTTPStatus.BAD_REQUEST
+            return {"error": "Wrong lenght of parameters!"}, HTTPStatus.BAD_REQUEST
         except TypeError as _:
-            return {"message": "CPF must have 11 digits"}, HTTPStatus.BAD_REQUEST
+            return {"error": "CPF must have 11 digits!"}, HTTPStatus.BAD_REQUEST
 
 
 class EmployeeIDResource(Resource):
@@ -40,13 +41,18 @@ class EmployeeIDResource(Resource):
         try:
             return update_employee(employee_id)
         except DataError:
-            return {"error": "Wrong lenght of parameters"}, HTTPStatus.BAD_REQUEST
+            return {"error": "Wrong lenght of parameters!"}, HTTPStatus.BAD_REQUEST
         except IntegrityError:
-            return {"error": "Wrong lenght of parameters"}, HTTPStatus.BAD_REQUEST
+            return {"error": "Cpf already exists!"}, HTTPStatus.BAD_REQUEST
+        except TypeError as e:
+            return {"error": "Employee doesn't exist!"}, HTTPStatus.BAD_REQUEST
 
     @jwt_required()
     def delete(self, employee_id: int):
-        return delete_employee(employee_id)
+        try:
+            return delete_employee(employee_id)
+        except UnmappedInstanceError as e:
+            return {"error": "Employee doesn't exist!"}, HTTPStatus.BAD_REQUEST
 
 
 class EmployeeLoginResource(Resource):

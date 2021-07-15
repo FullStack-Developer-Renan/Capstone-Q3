@@ -1,5 +1,5 @@
 from app.services.products_services import get_product_by_order_id
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from app.configs.database import db
 from sqlalchemy import Integer, Column, Boolean, DateTime
