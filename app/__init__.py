@@ -1,6 +1,7 @@
 from flask import Flask
 from environs import Env
 from app.configs import api, commands, database, migration, jwt
+from flask_cors import CORS
 
 
 def create_app() -> Flask:
@@ -8,6 +9,7 @@ def create_app() -> Flask:
     env.read_env
 
     app = Flask(__name__)
+    CORS(app)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = env("DATABASE_URI")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

@@ -3,13 +3,8 @@ from app.models.products_model import ProductsModel
 from flask import request
 from flask_restful import reqparse
 from http import HTTPStatus
-from ipdb import set_trace
-
 
 from app.services.helpers import add_commit, delete_commit
-
-# /api/products?section=<section:bool>?is_veggie=<is_veggie:bool>
-
 
 def get_all() -> dict:
 
@@ -49,14 +44,7 @@ def get_all() -> dict:
 def get_by_id(id) -> ProductsModel:
     product = ProductsModel.query.get(id)
     if product:
-        return {
-            "id": product.id,
-            "name": product.name,
-            "price": product.price,
-            "calories": product.calories,
-            "section": product.section,
-            "is_veggie": product.is_veggie,
-        }, HTTPStatus.OK
+        return product.serialize(), HTTPStatus.OK
     return {}, HTTPStatus.NOT_FOUND
 
 
@@ -75,14 +63,7 @@ def create_product() -> ProductsModel:
 
     add_commit(new_product)
 
-    return {
-        "id": new_product.id,
-        "name": new_product.name,
-        "price": new_product.price,
-        "calories": new_product.calories,
-        "section": new_product.section,
-        "is_veggie": new_product.is_veggie,
-    }
+    return new_product.serialize()
 
 def update_product(id: int) -> dict:
 
@@ -108,15 +89,7 @@ def update_product(id: int) -> dict:
 
     add_commit(query)
 
-    return {
-        "id": query.id,
-        "name": query.name,
-        "price": query.price,
-        "calories": query.calories,
-        "section": query.section,
-        "is_veggie": query.is_veggie,
-    }
-
+    return query.serialize()
 
 def get_product_by_order_id(order_id):
 
@@ -145,8 +118,6 @@ def get_product_by_order_id(order_id):
         quantity = response.count(elem)
         serialize = {"name": elem.name, "price": elem.price, "quantity": quantity}
         results.append(serialize)
-
-
 
     return results
 
