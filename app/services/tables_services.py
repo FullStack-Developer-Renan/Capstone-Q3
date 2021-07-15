@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from werkzeug.exceptions import NotFound
 from .helpers import add_commit, delete_commit
 from flask_restful import reqparse
