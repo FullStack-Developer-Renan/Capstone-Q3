@@ -1,3 +1,4 @@
+from app.services.products_services import get_product_by_order_id
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql.schema import ForeignKey
 from app.configs.database import db
@@ -40,5 +41,6 @@ class OrdersModel(db.Model):
                 "ready":self.ready,
                 "delivered":self.delivered,
                 "paid":self.paid,
+                "products": get_product_by_order_id(self.id)
         }
 
