@@ -2,6 +2,7 @@ from flask_restful import Resource
 from http import HTTPStatus
 from sqlalchemy.exc import DataError
 from sqlalchemy.orm.exc import UnmappedInstanceError
+from flask_jwt_extended import jwt_required
 
 # from ipdb import set_trace
 
@@ -15,26 +16,32 @@ from app.services.products_services import (
 
 
 class ProductsResource(Resource):
+    @jwt_required()
     def get(self):
         try:
             return get_all(), HTTPStatus.OK
         except DataError as _:
             return {"Message": "Invalid parameter value!"}, HTTPStatus.UNPROCESSABLE_ENTITY
 
+    @jwt_required()
     def post(self):
         return create_product(), HTTPStatus.CREATED
 
 
 class ProductIDResource(Resource):
+    @jwt_required()
     def get(self, product_id: int):
         return get_by_id(product_id)
 
+    @jwt_required()
     def patch(self, product_id: int):
         try:
             return update_product(product_id)
         except TypeError as _:
             return {"error":"Product doesn't exists"}, HTTPStatus.NOT_FOUND
 
+     
+    @jwt_required()
     def delete(self, product_id: int):
         try:
             return delete_product(product_id)
