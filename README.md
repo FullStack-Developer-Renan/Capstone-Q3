@@ -2,16 +2,16 @@
 
 ## **EMPLOYEES**
 
-### ![GET](./assets/img/GET.svg) GET_EMPLOYEES
+### ![GET](./assets/img/GET.svg) GET_ALL_EMPLOYEES
 
 ```
-/api/employees/
+/api/employees
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -22,14 +22,14 @@
     "id": 1,
     "name": "Joseph Climber",
     "login": "joseph",
-    "is_admin": "False",
+    "is_admin": false,
     "cpf": "047222222222"
   },
   {
     "id": 2,
     "name": "Irineu Rodrigues",
     "login": "irineu",
-    "is_admin": "True",
+    "is_admin": true,
     "cpf": "047333333333"
   }
 ]
@@ -41,13 +41,13 @@
 ### ![GET](./assets/img/GET.svg) GET_EMPLOYEE
 
 ```
-/api/employees/<employee_id: int>/
+/api/employees/<employee_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -57,7 +57,7 @@
   "id": 1,
   "name": "Joseph Climber",
   "login": "joseph",
-  "is_admin": "False",
+  "is_admin": false,
   "cpf": "047222222222"
 }
 ```
@@ -68,7 +68,13 @@
 ### ![POST](./assets/img/POST.svg) CREATE_EMPLOYEE
 
 ```
-/api/employees/
+/api/employees
+```
+
+#### Header
+
+```
+Bearer Token
 ```
 
 #### Body
@@ -78,7 +84,7 @@
   "name": "Joseph Climber",
   "login": "joseph",
   "password": "123456",
-  "is_admin": "False",
+  "is_admin": false,
   "cpf": "047222222222"
 }
 ```
@@ -90,8 +96,40 @@
   "id": 1,
   "name": "Joseph Climber",
   "login": "joseph",
-  "is_admin": "False",
+  "is_admin": false,
   "cpf": "047222222222"
+}
+```
+
+<br>
+<br>
+
+### ![POST](./assets/img/POST.svg) LOGIN_EMPLOYEE
+
+```
+/api/employees/login
+```
+
+#### Header
+
+```
+
+```
+
+#### Body
+
+```json
+{
+  "login": "joseph",
+  "password": "123456"
+}
+```
+
+#### Response
+
+```json
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYyNjQ0MjgzMywianRpIjoiMTE5MGM5OGQtYTI1Mi00ZjdlLWE3ZWYtOWNkYjA0OTUzYjI3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJpZCI6MiwibmFtZSI6ImlsbGlhbiIsImxvZ2luIjoiaWxsaWFuIiwiY3BmIjoiMDAwMDAwMDAwMDAiLCJpc19hZG1pbiI6ZmFsc2V9LCJuYmYiOjE2MjY0NDI4MzMsImV4cCI6MTYyNjQ0NjQzM30.pp94uopkA-HjiwvLTQXbGPQv587yHljHpW-27MBkBAE"
 }
 ```
 
@@ -101,13 +139,13 @@
 ### ![PATCH](./assets/img/PATCH.svg) UPDATE_EMPLOYEE
 
 ```
-/api/employees/<employee_id: int>/
+/api/employees/<employee_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Body
@@ -125,7 +163,7 @@
   "id": 1,
   "name": "Joseph Rodrigues",
   "login": "joseph",
-  "is_admin": "False",
+  "is_admin": false,
   "cpf": "047222222222"
 }
 ```
@@ -138,13 +176,13 @@
 ### ![DELETE](./assets/img/DELETE.svg) DELETE_EMPLOYEE
 
 ```
-/api/employees/<employee_id: int>/
+/api/employees/<employee_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -162,16 +200,16 @@
 
 <br>
 
-### ![GET](./assets/img/GET.svg) GET_USERS
+### ![GET](./assets/img/GET.svg) GET_ALL_USERS
 
 ```
-/api/users/
+/api/users
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -199,13 +237,13 @@
 ### ![GET](./assets/img/GET.svg) GET_USER
 
 ```
-/api/users/<user_cpf: str>/
+/api/users/<user_id:int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -225,13 +263,13 @@
 ### ![POST](./assets/img/POST.svg) CREATE_USER
 
 ```
-/api/users/
+/api/users
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Body
@@ -257,16 +295,42 @@
 <br>
 <br>
 
-### ![PATCH](./assets/img/PATCH.svg) UPDATE_USER
+### ![GET](./assets/img/GET.svg) GET_USER BY QUERY PARAM
 
 ```
-/api/users/<user_id: int>/
+/api/users?cpf=<cpf: str>&name=<name: str>
 ```
 
 #### Header
 
 ```
+Bearer Token
+```
 
+#### Response
+
+```json
+{
+  "id": 1,
+  "name": "Joseph Climber",
+  "cpf": "047222222222",
+  "total_spent": 345.22
+}
+```
+
+<br>
+<br>
+
+### ![PATCH](./assets/img/PATCH.svg) UPDATE_USER
+
+```
+/api/users/<user_id: int>
+```
+
+#### Header
+
+```
+Bearer Token
 ```
 
 #### Body
@@ -298,16 +362,16 @@
 
 <br>
 
-### ![GET](./assets/img/GET.svg) GET_TABLES
+### ![GET](./assets/img/GET.svg) GET_ALL_TABLES
 
 ```
-/api/tables?empty=<empty: bool>/
+/api/tables
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -326,7 +390,7 @@
       "total_spent": 522.35
     },
     "total": 127.48,
-    "empty": "False",
+    "empty": false,
     "orders_list": "/api/orders/1"
   },
   {
@@ -335,7 +399,7 @@
     "seats": 6,
     "user": {},
     "total": 127.48,
-    "empty": "True",
+    "empty": true,
     "orders_list": "/api/orders/2"
   }
 ]
@@ -347,13 +411,13 @@
 ### ![GET](./assets/img/GET.svg) GET_TABLE
 
 ```
-/api/tables/table_id=<table_id: int>/
+/api/tables/table_id=<table_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -371,7 +435,42 @@
     "total_spent": 522.35
   },
   "total": 127.48,
-  "empty": "False",
+  "empty": false,
+  "orders_list": "/api/orders/1"
+}
+```
+
+<br>
+<br>
+
+### ![GET](./assets/img/GET.svg) GET_TABLE BY QUERY PARAM
+
+```
+/api/tables?empty=<empty: bool>&number=<number: int>
+```
+
+#### Header
+
+```
+Bearer Token
+```
+
+#### Response
+
+```json
+{
+  "id": 1,
+  "login": "table01",
+  "number": 1,
+  "seats": 6,
+  "user": {
+    "id": 1,
+    "name": "Joseph Climber",
+    "cpf": "047222222222",
+    "total_spent": 522.35
+  },
+  "total": 127.48,
+  "empty": false,
   "orders_list": "/api/orders/1"
 }
 ```
@@ -382,13 +481,13 @@
 ### ![POST](./assets/img/POST.svg) CREATE_TABLE
 
 ```
-/api/tables/
+/api/tables
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Body
@@ -410,7 +509,7 @@
   "login": "table01",
   "number": 1,
   "seats": 6,
-  "empty": "True"
+  "empty": true
 }
 ```
 
@@ -420,13 +519,13 @@
 ### ![PATCH](./assets/img/PATCH.svg) UPDATE_TABLE
 
 ```
-/api/tables/<table_id: int>/
+/api/tables/<table_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Body
@@ -453,7 +552,7 @@
     "total_spent": 522.35
   },
   "total": 127.48,
-  "empty": "False",
+  "empty": false,
   "orders_list": "/api/orders/1"
 }
 ```
@@ -464,13 +563,13 @@
 ### ![DELETE](./assets/img/DELETE.svg) DELETE_TABLE
 
 ```
-/api/tables/<table_id: int>/
+/api/tables/<table_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -520,16 +619,16 @@
 
 <br>
 
-### ![GET](./assets/img/GET.svg) GET_ORDERS
+### ![GET](./assets/img/GET.svg) GET_ALL_ORDERS
 
 ```
-/api/orders?cooking=<cooking: bool>&ready=<ready: bool>&delivered=<delivered: bool>
+/api/orders
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -540,10 +639,10 @@
         "id": 1,
         "date": ,//decidir formato da data
         "table_number": 5,
-        "cooking": "False",
-        "ready": "False",
-        "delivered": "False",
-        "paid": "False",
+        "cooking": false,
+        "ready": false,
+        "delivered": false,
+        "paid": false,
         "products": [
                         {
                             "id": 1,
@@ -564,10 +663,10 @@
         "id": 2,
         "date": ,//decidir formato da data
         "table_number": 3,
-        "cooking": "True",
-        "ready": "False",
-        "delivered": "False",
-        "paid": "False",
+        "cooking": true,
+        "ready": false,
+        "delivered": false,
+        "paid": false,
         "products": [
                         {
                             "id": 4,
@@ -584,16 +683,16 @@
 <br>
 <br>
 
-### ![GET](./assets/img/GET.svg) GET_ORDERS_BY_TABLE
+### ![GET](./assets/img/GET.svg) GET_ORDER
 
 ```
-/api/orders/table/<table_id: int>?cooking=<cooking: bool>&ready=<ready: bool>&delivered=<delivered: bool>/
+/api/orders/<table_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -604,9 +703,54 @@
         "id": 1,
         "date": ,//decidir formato da data
         "table_number": 5,
-        "cooking": "False",
-        "ready": "False",
-        "delivered": "False",
+        "cooking": false,
+        "ready": false,
+        "delivered": false,
+        "products": [
+                        {
+                            "id": 1,
+                            "name": "Risoto Carbonara",
+                            "quantity": 2,
+                            "price": 7.80
+                        },
+                        {
+                            "id": 3,
+                            "name": "Fettuccine com molho Marzano",
+                            "quantity": 1,
+                            "price": 15.00
+                        }
+                    ],
+        "total_products": 30.60
+    }
+]
+```
+
+<br>
+<br>
+
+### ![GET](./assets/img/GET.svg) GET*ORDERS* BY QUERY PARAMS
+
+```
+/api/orders?table_id=<table_id: int>?&ready=<ready: bool>&paid=<paid: bool>
+```
+
+#### Header
+
+```
+Bearer Token
+```
+
+#### Response
+
+```json
+[
+    {
+        "id": 1,
+        "date": ,//decidir formato da data
+        "table_number": 5,
+        "cooking": false,
+        "ready": false,
+        "delivered": false,
         "products": [
                         {
                             "id": 1,
@@ -632,33 +776,22 @@
 ### ![POST](./assets/img/POST.svg) CREATE_ORDER
 
 ```
-/api/orders/
+/api/orders
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Body
 
 ```json
 {
-    "date": ,//decidir formato da data
-    "table_id": 5,
-    "products": [
-                    {
-                        "id": 1,
-                        "name": "Risoto Carbonara",
-                        "quantity": 2
-                    },
-                    {
-                        "id": 3,
-                        "name": "Fettuccine com molho Marzano",
-                        "quantity": 1
-                    }
-                ]
+  "date": "Timestamp -> Unix", //decidir formato da data
+  "table_id": 5,
+  "products": [1, 2, 3, 1]
 }
 ```
 
@@ -669,9 +802,9 @@
     "id": 1,
     "date": ,//decidir formato da data
     "table_number": 5,
-    "cooking": "False",
-    "ready": "False",
-    "delivered": "False",
+    "cooking": false,
+    "ready": false,
+    "delivered": false,
     "products": [
                     {
                         "id": 1,
@@ -697,22 +830,22 @@
 ### ![PATCH](./assets/img/PATCH.svg) UPDATE_ORDER
 
 ```
-/api/orders/<order_id: int>/
+/api/orders/<order_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Body
 
 ```json
 {
-  "cooking": "False",
-  "ready": "True",
-  "delivered": "False"
+  "cooking": false,
+  "ready": true,
+  "delivered": false
 }
 ```
 
@@ -724,9 +857,9 @@
         "id": 1,
         "date": ,//decidir formato da data
         "table_number": 5,
-        "cooking": "False",
-        "ready": "True",
-        "delivered": "False",
+        "cooking": false,
+        "ready": true,
+        "delivered": false,
         "products": [
                         {
                             "id": 1,
@@ -752,13 +885,13 @@
 ### ![DELETE](./assets/img/DELETE.svg) DELETE_ORDER
 
 ```
-/api/orders/<order_id: int>/
+/api/orders/<order_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -776,16 +909,16 @@
 
 <br>
 
-### ![GET](./assets/img/GET.svg) GET_PRODUCTS
+### ![GET](./assets/img/GET.svg) GET_ALL_PRODUCTS
 
 ```
-/api/products?section=<section: bool>?veggie=<veggie: bool>
+/api/products
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -815,13 +948,13 @@
 ### ![GET](./assets/img/GET.svg) GET_PRODUCT
 
 ```
-/api/products/<product_id: int>/
+/api/products/<product_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
@@ -839,16 +972,52 @@
 <br>
 <br>
 
-### ![POST](./assets/img/POST.svg) CREATE_PRODUCT
+### ![GET](./assets/img/GET.svg) GET_PRODUCTS BY QUERY PARAM
 
 ```
-/api/products/
+/api/products?section=<section: bool>?veggie=<veggie: bool>
 ```
 
 #### Header
 
 ```
+Bearer Token
+```
 
+#### Response
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Risoto Carbonara",
+    "section": "Pratos principais",
+    "price": 7.8,
+    "calories": 587.87
+  },
+  {
+    "id": 3,
+    "name": "Fettuccine com molho Marzano",
+    "section": "Pratos principais",
+    "price": 15.0,
+    "calories": 635.22
+  }
+]
+```
+
+<br>
+<br>
+
+### ![POST](./assets/img/POST.svg) CREATE_PRODUCT
+
+```
+/api/products
+```
+
+#### Header
+
+```
+Bearer Token
 ```
 
 #### Body
@@ -879,13 +1048,13 @@
 ### ![PATCH](./assets/img/PATCH.svg) UPDATE_PRODUCT
 
 ```
-/api/products/<product_id: int>/
+/api/products/<product_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Body
@@ -914,13 +1083,13 @@
 ### ![DELETE](./assets/img/DELETE.svg) UPDATE_PRODUCT
 
 ```
-/api/products/<product_id: int>/
+/api/products/<product_id: int>
 ```
 
 #### Header
 
 ```
-
+Bearer Token
 ```
 
 #### Response
