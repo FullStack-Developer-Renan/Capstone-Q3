@@ -1,4 +1,4 @@
-from app.services.products_orders_services import delete_product_order_by_order, relate_product_order
+from app.services.products_orders_services import delete_product_order_by_order, relate_product_order, total_table
 from app.models.orders_model import OrdersModel
 from app.services.helpers import add_commit, delete_commit
 from http import HTTPStatus
@@ -25,6 +25,8 @@ def create_order():
     order: OrdersModel = OrdersModel(**args)
     
     add_commit(order)
+    
+    total_table(products, order.table_id)
 
     for i in products: 
         relate_product_order(order.id, i)

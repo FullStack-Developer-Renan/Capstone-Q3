@@ -11,6 +11,7 @@ from app.services.tables_services import (
     get_by_id,
     delete_table,
     login_table,
+    paybill_table,
     update_table,
 )
 
@@ -63,3 +64,10 @@ class TableLoginResource(Resource):
             return login_table()
         except NotFound as _:
             return {"error": "User not Found"}, HTTPStatus.NOT_FOUND
+
+class TableCloseOrders(Resource):
+    def patch(self, id: int):
+        try:
+            return paybill_table(id)
+        except TypeError as _:
+            return {"error": "Invalid id"}, HTTPStatus.BAD_REQUEST
