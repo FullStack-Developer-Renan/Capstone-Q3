@@ -1,3 +1,4 @@
+from app.services.users_services import user_coupon
 from flask import request
 from sqlalchemy.sql.expression import null
 from werkzeug.exceptions import NotFound
@@ -161,26 +162,36 @@ def get_by_id(table_id) -> RestaurantTableModel:
 
 
 def paybill_table(id):
-    orders_to_pay = OrdersModel.query.filter_by(table_id=id, delivered=True, paid=False).all()
+    orders_to_pay = OrdersModel.query.filter_by(table_id=id, cooking=True, ready=True, delivered=True, paid=False).all()
 
     table = RestaurantTableModel.query.filter_by(id=id).first()
 
     if not table:
         raise("Error")
 
-    if table.user_id != None:    
-        user = UsersModel.query.get(table.user_id)
-        setattr(user, "total", user.total + table.total)
-        add_commit(user)
-        
-    setattr(table, "user_id", None)
-    setattr(table, "total", 0)
-    setattr(table, "empty", True)
-    add_commit(table)
+    if orders_to_pay != []:    
+        if table.user_id != None:    
+            user = UsersModel.query.get(table.user_id)         
+            coupon = user_coupon(table, user)
+            setattr(user, "total", user.total + table.total)
+            add_commit(user)
+            
+        setattr(table, "user_id", None)
+        setattr(table, "total", 0)
+        setattr(table, "empty", True)
+        add_commit(table)
 
-    for order in orders_to_pay:
-        setattr(order, "paid", True)
-        add_commit(order)
+        for order in orders_to_pay:
+            setattr(order, "paid", True)
+            add_commit(order)
+        
+        if coupon == null:
+            return {"message": "payment completed!"}
+        return coupon
+
+    return {"message": "There are no orders to be paid at the moment!"}
+
+
 
     
    
