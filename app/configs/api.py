@@ -21,7 +21,7 @@ def init_app(app: Flask) -> None:
 
 
     api.add_resource(OrdersResource, "/api/orders", endpoint="ORDERS")
-    api.add_resource(OrderIDResource, "/api/orders/<int:order_id>", endpoint="ORDER")
+    api.add_resource(OrderIDResource, "/api/orders/<int:order_id>", endpoint="ORDER_ID")
 
     from app.views.products_view import ProductsResource, ProductIDResource
 
@@ -39,8 +39,10 @@ def init_app(app: Flask) -> None:
         TablesResource,
         TableIdResource,
         TableLoginResource,
+        TableCloseOrders
     )
 
-    api.add_resource(TablesResource, "/api/tables", endpoint="TABLE")
+    api.add_resource(TablesResource, "/api/tables", endpoint="TABLES")
     api.add_resource(TableLoginResource, "/api/tables/login", endpoint="TABLE_LOGIN")
-    api.add_resource(TableIdResource, "/api/tables/<int:id>", endpoint="TABLES")
+    api.add_resource(TableIdResource, "/api/tables/<int:id>", endpoint="TABLES_ID")
+    api.add_resource(TableCloseOrders, "/api/tables/paybill/<int:id>", endpoint="TABLES_CLOSE")

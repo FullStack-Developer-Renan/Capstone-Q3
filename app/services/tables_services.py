@@ -1,12 +1,15 @@
 from flask import request
+from sqlalchemy.sql.expression import null
 from werkzeug.exceptions import NotFound
 from .helpers import add_commit, delete_commit
 from flask_restful import reqparse
 from app.models.restaurant_table_model import RestaurantTableModel
 from http import HTTPStatus
 from flask_jwt_extended import create_access_token
+from app.models.orders_model import OrdersModel
+from app.models.users_model import UsersModel
 from app.exc import DuplicatedKeys
-
+from ipdb import set_trace
 
 def get_all() -> list:
     args = request.args
@@ -156,4 +159,29 @@ def get_by_id(table_id) -> RestaurantTableModel:
 
     return {"status": "table not found!"}, HTTPStatus.NOT_FOUND
 
+
+def paybill_table(id):
+    orders_to_pay = OrdersModel.query.filter_by(table_id=id, delivered=True, paid=False).all()
+
+    table = RestaurantTableModel.query.filter_by(id=id).first()
+
+    if not table:
+        raise("Error")
+
+    if table.user_id != None:    
+        user = UsersModel.query.get(table.user_id)
+        setattr(user, "total", user.total + table.total)
+        add_commit(user)
+        
+    setattr(table, "user_id", None)
+    setattr(table, "total", 0)
+    setattr(table, "empty", True)
+    add_commit(table)
+
+    for order in orders_to_pay:
+        setattr(order, "paid", True)
+        add_commit(order)
+
+    
+   
 
