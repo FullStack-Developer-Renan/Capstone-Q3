@@ -2,6 +2,7 @@ from app.configs.database import db
 from sqlalchemy import Column, Integer, ForeignKey
 from dataclasses import dataclass
 
+
 @dataclass
 class ProductsOrdersModel(db.Model):
     id: int

@@ -3,6 +3,7 @@ from app.configs.database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from dataclasses import dataclass
 
+
 @dataclass
 class EmployeesModel(db.Model):
     id: int

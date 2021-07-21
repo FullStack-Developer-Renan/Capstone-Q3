@@ -3,6 +3,7 @@ from sqlalchemy.sql.sqltypes import Float, String
 from app.configs.database import db
 from dataclasses import dataclass
 
+
 @dataclass
 class ProductsModel(db.Model):
     id: int

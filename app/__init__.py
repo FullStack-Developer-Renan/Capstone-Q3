@@ -1,7 +1,7 @@
 from datetime import timedelta
 from flask import Flask
 from environs import Env
-from app.configs import api, commands, database, migration, jwt
+from app.configs import api, database, migration, jwt
 from flask_cors import CORS
 
 
@@ -21,7 +21,6 @@ def create_app() -> Flask:
 
     database.init_app(app)
     migration.init_app(app)
-    commands.init_app(app)
     jwt.init_app(app)
     api.init_app(app)
 

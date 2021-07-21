@@ -4,7 +4,6 @@ from http import HTTPStatus
 from sqlalchemy.exc import DataError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from flask_jwt_extended import jwt_required
-
 from app.services.products_services import (
     get_all,
     get_by_id,
