@@ -10,7 +10,7 @@ from flask_jwt_extended import create_access_token
 from app.models.orders_model import OrdersModel
 from app.models.users_model import UsersModel
 from app.exc import DuplicatedKeys
-from ipdb import set_trace
+
 
 def get_all() -> list:
     args = request.args

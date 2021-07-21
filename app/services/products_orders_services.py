@@ -4,6 +4,7 @@ from app.models.products_model import ProductsModel
 from app.models.products_orders_model import ProductsOrdersModel
 from app.services.helpers import add_commit, delete_commit
 
+
 def relate_product_order(order_id, product_id): 
     
     order = OrdersModel.query.get(order_id)
