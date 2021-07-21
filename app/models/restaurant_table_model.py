@@ -1,7 +1,6 @@
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from app.configs.database import db
-
 from sqlalchemy import Column, Integer, Boolean, String, Float
 from werkzeug.security import generate_password_hash, check_password_hash
 from dataclasses import dataclass

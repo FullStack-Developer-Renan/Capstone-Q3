@@ -4,7 +4,6 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import DataError, IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
-
 from app.services.employees_services import (
     get_all,
     get_by_id,

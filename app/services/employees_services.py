@@ -3,9 +3,9 @@ from flask import current_app
 from flask_restful import reqparse
 from http import HTTPStatus
 from flask_jwt_extended import create_access_token
-
 from app.services.helpers import add_commit
 from app.exc import DuplicatedKeys
+
 
 def get_employee_by_login(data) -> EmployeesModel:
     user: EmployeesModel = EmployeesModel.query.filter_by(login=data['login']).first()

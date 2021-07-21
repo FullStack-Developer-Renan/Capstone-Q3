@@ -4,7 +4,6 @@ from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError, DataError
 from werkzeug.exceptions import NotFound
 from app.exc import DuplicatedKeys
-
 from app.services.tables_services import (
     get_all,
     create_table,
