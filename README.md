@@ -560,6 +560,36 @@ Bearer Token
 <br>
 <br>
 
+### ![PATCH](./assets/img/PATCH.svg) PAY_BILL
+
+```
+/api/tables/paybill/<table_id: int>
+```
+
+#### Header
+
+```
+Bearer Token
+```
+
+#### Body
+
+```json
+empty
+```
+
+#### Response
+
+```json
+{
+  "Total without discount": 140.0,
+  "Total with discount": 112.0
+}
+```
+
+<br>
+<br>
+
 ### ![DELETE](./assets/img/DELETE.svg) DELETE_TABLE
 
 ```
