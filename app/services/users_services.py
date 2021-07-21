@@ -1,4 +1,6 @@
 from http import HTTPStatus
+from ipdb.__main__ import set_trace
+from sqlalchemy.sql.expression import null
 
 from sqlalchemy.sql.functions import user
 from app.models.users_model import UsersModel
@@ -102,3 +104,15 @@ def delete_user(id: int):
     delete_commit(query)
 
     return "", HTTPStatus.NO_CONTENT
+
+def user_coupon(table, user):
+    if int(user.total) >= 400:
+        old_total = table.total
+        new_total = table.total - table.total*(0.2)
+        setattr(table, "total", new_total)
+        setattr(user, "total", 0)
+        add_commit(table)
+        add_commit(user)
+        return {"Total without discount": old_total, "Total with discount": table.total}
+    return null
+    
