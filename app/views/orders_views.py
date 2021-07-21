@@ -5,6 +5,7 @@ from sqlalchemy.exc import DataError, IntegrityError
 from app.services.orders_services import create_order, get_orders, get_order, remove_order,update_order
 from flask_jwt_extended import jwt_required
 
+
 class OrdersResource(Resource):
     @jwt_required()
     def post(self):

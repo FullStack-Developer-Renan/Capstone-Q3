@@ -1,7 +1,5 @@
 from http import HTTPStatus
-from ipdb.__main__ import set_trace
 from sqlalchemy.sql.expression import null
-
 from sqlalchemy.sql.functions import user
 from app.models.users_model import UsersModel
 from flask import request
