@@ -94,7 +94,8 @@ def get_orders(): ## ok
 
         for value in response:
             list_optional_atr.append(value.serialize())
-
+        if "paid" not in args:
+            return [data for data in list_optional_atr if data['paid'] != True]
         return list_optional_atr
     else:
         return []
